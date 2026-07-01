@@ -71,14 +71,44 @@
       100%{transform:translateY(0)} 
     }
 
-    #configContainer{ 
-      max-width:720px; 
+    #mainContainer{ 
+      max-width:760px; 
       margin:0 auto; 
     }
 
-    .code-box,
+    .tabs{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      margin:10px 0 18px;
+      flex-wrap:wrap;
+    }
+
+    .tab-btn{
+      background:white;
+      color:var(--title);
+      border:2px solid var(--border);
+      font-weight:900;
+      min-width:150px;
+    }
+
+    .tab-btn.active{
+      background:var(--button);
+      color:white;
+      border-color:var(--button);
+    }
+
+    .tab-page{
+      display:none;
+    }
+
+    .tab-page.active{
+      display:block;
+    }
+
+    .card,
     .calculator-box,
-    #progressSection{
+    .profile-box{
       background:var(--card);
       border:2px solid var(--border);
       border-radius:18px;
@@ -88,11 +118,6 @@
       transition:background .4s ease, border .4s ease;
     }
 
-    .calculator-box,
-    #progressSection{
-      display:none;
-    }
-
     .top-start-btn{
       font-size:1.15rem;
       font-weight:800;
@@ -100,91 +125,15 @@
       margin:6px 0 14px;
     }
 
-    .subtle-settings-box{
-      padding:10px 14px;
-    }
-
-    .subtle-settings-box details{
-      text-align:left;
-    }
-
-    .subtle-settings-box summary{
-      cursor:pointer;
-      color:var(--title);
-      font-weight:800;
-      text-align:center;
-      list-style:none;
-    }
-
-    .subtle-settings-box summary::-webkit-details-marker{
-      display:none;
-    }
-
-    .subtle-settings-box summary::after{
-      content:"  ⚙";
-      font-size:.9rem;
-    }
-
-    .subtle-settings-box .code-row{
-      margin-top:12px;
-    }
-
-    .code-row{
-      display:flex;
-      gap:8px;
-      justify-content:center;
-      align-items:center;
-    }
-
-    #codeInput{
-      flex:1;
-      padding:10px 12px;
-      border:1px solid #ccc;
-      border-radius:10px;
-      font-size:1rem;
-    }
-
-    #applyCodeBtn{
-      margin-top:0;
-      white-space:nowrap;
-    }
-
-    #sofiaStartSlot{
-      margin-top:10px;
-      text-align:center;
-    }
-
-    #welcomeMessage{
-      display:none;
-      margin-top:12px;
-      padding:14px;
-      border-radius:14px;
-      background:linear-gradient(135deg, #fff0f6, #f3e8ff);
+    .current-player-pill{
+      display:inline-block;
+      background:white;
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:8px 14px;
       color:var(--title);
       font-weight:900;
-      font-size:1.2rem;
-      animation:popIn .45s ease;
-      box-shadow:0 4px 12px rgba(142,68,173,0.18);
-      text-align:center;
-    }
-
-    body.sofia-mode #welcomeMessage{
-      background:linear-gradient(135deg, #ede9fe, #f5f3ff);
-    }
-
-    @keyframes popIn{
-      0%{ transform:scale(.8); opacity:0; }
-      70%{ transform:scale(1.05); opacity:1; }
-      100%{ transform:scale(1); opacity:1; }
-    }
-
-    .sparkle{
-      animation:sparkle 1.2s ease-in-out infinite alternate;
-    }
-
-    @keyframes sparkle{
-      from{ text-shadow:0 0 4px #fff; }
-      to{ text-shadow:0 0 10px #c084fc, 0 0 18px #a78bfa; }
+      margin-bottom:10px;
     }
 
     .row{ 
@@ -200,11 +149,57 @@
       font-weight:600;
     }
 
-    .row>input{ 
+    .row>input,
+    .row>select{ 
       flex:1; 
       padding:8px 10px; 
       border:1px solid #ccc; 
       border-radius:8px; 
+    }
+
+    .code-row{
+      display:flex;
+      gap:8px;
+      justify-content:center;
+      align-items:center;
+      margin-top:8px;
+    }
+
+    .code-row input{
+      flex:1;
+      padding:10px 12px;
+      border:1px solid #ccc;
+      border-radius:10px;
+      font-size:1rem;
+    }
+
+    .profile-search{
+      display:flex;
+      gap:8px;
+      justify-content:center;
+      align-items:center;
+      margin:10px 0;
+    }
+
+    .profile-search input{
+      flex:1;
+      padding:10px 12px;
+      border:1px solid #ccc;
+      border-radius:10px;
+      font-size:1rem;
+    }
+
+    .profile-status{
+      font-weight:900;
+      color:var(--accent);
+      min-height:1.3em;
+      margin-top:8px;
+    }
+
+    .muted-note{
+      color:#666;
+      font-size:.92rem;
+      margin:6px 0;
     }
 
     .collapsible-card{
@@ -345,6 +340,14 @@
       cursor:not-allowed; 
     }
 
+    .secondary-btn{
+      background:#6b7280;
+    }
+
+    .danger-btn{
+      background:#b91c1c;
+    }
+
     #error-message{ 
       color:#c00; 
       font-weight:700; 
@@ -359,19 +362,12 @@
       min-height:1.2em;
     }
 
-    #progressSection p{
-      margin-top:0;
-    }
-
-    .sofia-inputs{
+    .nested-details{
       background:white;
       border-radius:14px;
       padding:12px;
       margin:14px 0;
       border:1px solid #eee;
-    }
-
-    .nested-details{
       text-align:left;
     }
 
@@ -549,12 +545,17 @@
         grid-template-columns:1fr;
       }
 
-      .code-row{
+      .row,
+      .code-row,
+      .profile-search{
         flex-direction:column;
       }
 
-      #codeInput,
-      #applyCodeBtn{
+      .row>label,
+      .row>input,
+      .code-row input,
+      .profile-search input,
+      .profile-search button{
         width:100%;
       }
 
@@ -575,170 +576,185 @@
 
   <h1>Squash Ghosting Drill</h1>
 
-  <div id="configContainer">
+  <div id="mainContainer">
+    <div class="tabs">
+      <button class="tab-btn active" id="ghostingTabBtn">Ghosting</button>
+      <button class="tab-btn" id="profileTabBtn">Player Profile</button>
+    </div>
 
-    <div id="homeStartSlot">
+    <div class="current-player-pill" id="currentPlayerPill">Current player: Guest</div>
+
+    <section id="ghostingPage" class="tab-page active">
       <button id="startBtn" class="top-start-btn">Start Drill</button>
-    </div>
 
-    <div class="code-box subtle-settings-box">
-      <details>
-        <summary>Player Settings</summary>
-
-        <div class="code-row">
-          <input type="password" id="codeInput" placeholder="Optional access key">
-          <button id="applyCodeBtn">Open</button>
-        </div>
-
-        <div id="welcomeMessage"></div>
-
-        <div id="sofiaStartSlot"></div>
-      </details>
-    </div>
-
-    <div class="row">
-      <label for="setsInput">Number of Sets</label>
-      <input type="number" id="setsInput" min="1" step="1" placeholder="e.g., 3">
-    </div>
-
-    <div class="row">
-      <label for="movesInput">Moves per Set</label>
-      <input type="number" id="movesInput" min="1" step="1" placeholder="e.g., 10">
-    </div>
-
-    <div class="row">
-      <label for="secondsInput">Reaction Time / Time to Ball (s)</label>
-      <input type="number" id="secondsInput" min="0.1" step="0.1" placeholder="e.g., 3">
-    </div>
-
-    <div class="row">
-      <label for="moveBreakInput">Reposition Time (s)</label>
-      <input type="number" id="moveBreakInput" min="0" step="0.1" placeholder="e.g., 0.2">
-    </div>
-
-    <div class="row">
-      <label for="setBreakInput">Rest Between Sets (s)</label>
-      <input type="number" id="setBreakInput" min="0" step="1" placeholder="e.g., 45">
-    </div>
-
-    <div class="direction-grid" id="directionButtons"></div>
-
-    <details class="calculator-box collapsible-card">
-      <summary>Performance Calculator</summary>
-      <p>These update automatically when you change your numbers.</p>
-
-      <div class="metric-grid">
-        <div class="metric">
-          <div class="metric-label">Estimated speed to ball</div>
-          <div class="metric-value" id="speedMetric">—</div>
-          <div class="metric-note">Distance ÷ reaction time</div>
-        </div>
-
-        <div class="metric">
-          <div class="metric-label">Total moves</div>
-          <div class="metric-value" id="movesMetric">—</div>
-          <div class="metric-note">Sets × moves per set</div>
-        </div>
-
-        <div class="metric">
-          <div class="metric-label">Active ghosting time</div>
-          <div class="metric-value" id="activeMetric">—</div>
-          <div class="metric-note">Time actually moving to the ball</div>
-        </div>
-
-        <div class="metric">
-          <div class="metric-label">Total session time</div>
-          <div class="metric-value" id="sessionMetric">—</div>
-          <div class="metric-note">Active + reposition + rest</div>
-        </div>
-
-        <div class="metric">
-          <div class="metric-label">Work ratio</div>
-          <div class="metric-value" id="workRatioMetric">—</div>
-          <div class="metric-note">Higher = less rest, more stamina demand</div>
-        </div>
-
-        <div class="metric">
-          <div class="metric-label">Stamina load</div>
-          <div class="metric-value" id="staminaMetric">—</div>
-          <div class="metric-note">Light, moderate, hard, or intense</div>
-        </div>
-      </div>
-    </details>
-
-    <details id="progressSection" class="collapsible-card">
-      <summary>📈 Sofia’s Progress</summary>
-      <p>Track ghosting speed and Universal Squash Rating over time.</p>
-
-      <details class="sofia-inputs nested-details">
-        <summary>Current Ghosting Entry</summary>
-
+      <div class="card">
         <div class="row">
-          <label for="distanceInput">Average Distance to Ball (m)</label>
-          <input type="number" id="distanceInput" min="0.1" step="0.1" placeholder="e.g., 4.5">
+          <label for="setsInput">Number of Sets</label>
+          <input type="number" id="setsInput" min="1" step="1" placeholder="e.g., 3">
         </div>
 
         <div class="row">
-          <label for="ratingInput">Universal Squash Rating</label>
-          <input type="number" id="ratingInput" min="0" step="0.01" placeholder="e.g., 4.25">
+          <label for="movesInput">Moves per Set</label>
+          <input type="number" id="movesInput" min="1" step="1" placeholder="e.g., 10">
         </div>
 
         <div class="row">
-          <label for="dateInput">Progress Date</label>
-          <input type="date" id="dateInput">
-        </div>
-      </details>
-
-      <details class="sofia-inputs nested-details">
-        <summary>Enter Old Squash Rating</summary>
-
-        <div class="row">
-          <label for="oldRatingDateInput">Old Rating Date</label>
-          <input type="date" id="oldRatingDateInput">
+          <label for="secondsInput">Reaction Time / Time to Ball (s)</label>
+          <input type="number" id="secondsInput" min="0.1" step="0.1" placeholder="e.g., 3">
         </div>
 
         <div class="row">
-          <label for="oldRatingInput">Old Universal Squash Rating</label>
-          <input type="number" id="oldRatingInput" min="0" step="0.01" placeholder="e.g., 3.85">
+          <label for="moveBreakInput">Reposition Time (s)</label>
+          <input type="number" id="moveBreakInput" min="0" step="0.1" placeholder="e.g., 0.2">
         </div>
 
-        <button id="addOldRatingBtn">Add Old Rating to Chart</button>
-      </details>
+        <div class="row">
+          <label for="setBreakInput">Rest Between Sets (s)</label>
+          <input type="number" id="setBreakInput" min="0" step="1" placeholder="e.g., 45">
+        </div>
 
-      <details class="sofia-inputs nested-details">
-        <summary>Import ClubLocker Rating History</summary>
-
-        <p>Paste the full ClubLocker rating history text here. The app will clean duplicates and use one rating per date.</p>
-
-        <textarea id="clubLockerBulkInput" placeholder="Paste ClubLocker rating history here..."></textarea>
-
-        <button id="importClubLockerBtn">Import ClubLocker History</button>
-      </details>
-
-      <details class="history-details">
-        <summary>Show / edit rating history</summary>
-        <div id="progressRows"></div>
-      </details>
-
-      <button id="saveProfileBtn">Save Sofia Profile</button>
-      <button id="addProgressBtn">Add Current Stats to Chart</button>
-      <button id="resyncSheetsBtn">Resync All History to Google Sheets</button>
-      <button id="resetProfileBtn">Reset Sofia Profile</button>
-
-      <div id="sheetStatus"></div>
-
-      <div class="chart-card">
-        <h3>Speed Progress</h3>
-        <canvas id="progressChart"></canvas>
+        <div class="direction-grid" id="directionButtons"></div>
       </div>
 
-      <div class="chart-card">
-        <h3>Universal Squash Rating Progress</h3>
-        <canvas id="ratingProgressChart"></canvas>
-      </div>
-    </details>
+      <details class="calculator-box collapsible-card">
+        <summary>Performance Calculator</summary>
+        <p>These update automatically when you change your numbers.</p>
 
-    <div id="error-message"></div>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="metric-label">Estimated speed to ball</div>
+            <div class="metric-value" id="speedMetric">—</div>
+            <div class="metric-note">Distance ÷ reaction time</div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">Total moves</div>
+            <div class="metric-value" id="movesMetric">—</div>
+            <div class="metric-note">Sets × moves per set</div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">Active ghosting time</div>
+            <div class="metric-value" id="activeMetric">—</div>
+            <div class="metric-note">Time actually moving to the ball</div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">Total session time</div>
+            <div class="metric-value" id="sessionMetric">—</div>
+            <div class="metric-note">Active + reposition + rest</div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">Work ratio</div>
+            <div class="metric-value" id="workRatioMetric">—</div>
+            <div class="metric-note">Higher = less rest, more stamina demand</div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">Stamina load</div>
+            <div class="metric-value" id="staminaMetric">—</div>
+            <div class="metric-note">Light, moderate, hard, or intense</div>
+          </div>
+        </div>
+      </details>
+
+      <div id="error-message"></div>
+    </section>
+
+    <section id="profilePage" class="tab-page">
+      <div class="profile-box">
+        <h2>Player Profile</h2>
+        <p class="muted-note">Search your name to load a profile. If it does not exist, the site can create one. Sofia can type her access key here.</p>
+
+        <div class="profile-search">
+          <input type="text" id="playerSearchInput" placeholder="Search player name or enter access key">
+          <button id="loadProfileBtn">Load / Create Profile</button>
+        </div>
+
+        <div class="profile-status" id="profileStatus"></div>
+
+        <div class="row">
+          <label for="profileDisplayNameInput">Display Name</label>
+          <input type="text" id="profileDisplayNameInput" placeholder="e.g., Sofia Tang">
+        </div>
+
+        <button id="saveProfileNameBtn">Save Profile Name</button>
+        <button id="clearCurrentProfileBtn" class="secondary-btn">Use Guest Mode</button>
+      </div>
+
+      <details class="profile-box collapsible-card" id="profileProgressSection" open>
+        <summary>Player Progress</summary>
+        <p>All saves here attach to the current player shown at the top.</p>
+
+        <details class="nested-details">
+          <summary>Current Ghosting Entry</summary>
+
+          <div class="row">
+            <label for="distanceInput">Average Distance to Ball (m)</label>
+            <input type="number" id="distanceInput" min="0.1" step="0.1" placeholder="e.g., 4.5">
+          </div>
+
+          <div class="row">
+            <label for="ratingInput">Universal Squash Rating</label>
+            <input type="number" id="ratingInput" min="0" step="0.01" placeholder="e.g., 4.25">
+          </div>
+
+          <div class="row">
+            <label for="dateInput">Progress Date</label>
+            <input type="date" id="dateInput">
+          </div>
+
+          <button id="addProgressBtn">Add Current Stats to Chart</button>
+        </details>
+
+        <details class="nested-details">
+          <summary>Enter Old Squash Rating</summary>
+
+          <div class="row">
+            <label for="oldRatingDateInput">Old Rating Date</label>
+            <input type="date" id="oldRatingDateInput">
+          </div>
+
+          <div class="row">
+            <label for="oldRatingInput">Old Universal Squash Rating</label>
+            <input type="number" id="oldRatingInput" min="0" step="0.01" placeholder="e.g., 3.85">
+          </div>
+
+          <button id="addOldRatingBtn">Add Old Rating to Chart</button>
+        </details>
+
+        <details class="nested-details">
+          <summary>Import ClubLocker Rating History</summary>
+
+          <p class="muted-note">Paste ClubLocker rating history text. The app cleans duplicates and saves one rating per date.</p>
+
+          <textarea id="clubLockerBulkInput" placeholder="Paste ClubLocker rating history here..."></textarea>
+
+          <button id="importClubLockerBtn">Import ClubLocker History</button>
+        </details>
+
+        <details class="history-details">
+          <summary>Show / edit rating history</summary>
+          <div id="progressRows"></div>
+        </details>
+
+        <button id="resyncSheetsBtn">Resync This Player to Google Sheets</button>
+        <button id="resetProfileBtn" class="danger-btn">Reset Local Profile Data</button>
+
+        <div id="sheetStatus"></div>
+
+        <div class="chart-card">
+          <h3>Speed Progress</h3>
+          <canvas id="progressChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+          <h3>Universal Squash Rating Progress</h3>
+          <canvas id="ratingProgressChart"></canvas>
+        </div>
+      </details>
+    </section>
   </div>
 
   <div id="drillView">
@@ -763,6 +779,8 @@
   <script>
     const GOOGLE_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxtmitu5p3d1bA45VNqj_Bh26YWf71oGINgZg6g7wwM-e4-EKgSbVwwPtQdc9FAhj0R/exec';
 
+    const SOFIA_ACCESS_KEY = 'sofiahtang';
+
     const allDirections = [
       { name: 'Front Left',  key: 'front-left',  row:0 },
       { name: 'Front Right', key: 'front-right', row:0 },
@@ -772,56 +790,18 @@
       { name: 'Back Right',  key: 'back-right',  row:2 }
     ];
 
-    const clubLockerDefaultRatings = [
-      ['2023-05-10',1.98],['2023-05-17',2.05],['2023-05-31',2.15],
-      ['2023-06-07',2.13],['2023-06-14',2.17],['2023-06-21',2.14],['2023-06-28',2.12],
-      ['2023-07-05',2.13],['2023-07-12',2.17],['2023-07-19',2.22],['2023-07-26',2.23],
-      ['2023-08-02',2.19],['2023-08-09',2.25],['2023-08-16',2.26],['2023-08-23',2.30],['2023-08-30',2.26],
-      ['2023-09-06',2.31],['2023-09-13',2.34],['2023-09-20',2.31],['2023-09-27',2.27],
-      ['2023-10-04',2.31],['2023-10-11',2.36],['2023-10-18',2.54],['2023-10-25',2.64],
-      ['2023-11-01',2.68],['2023-11-08',2.70],['2023-11-15',2.72],['2023-11-22',2.70],['2023-11-29',2.77],
-      ['2023-12-06',2.75],['2023-12-13',2.76],['2023-12-20',2.81],['2023-12-27',2.81],
-      ['2024-01-03',2.81],['2024-01-10',2.84],['2024-01-17',2.84],['2024-01-24',2.92],['2024-01-31',3.00],
-      ['2024-02-07',2.97],['2024-02-14',3.02],['2024-02-21',3.02],['2024-02-28',3.05],
-      ['2024-03-06',3.03],['2024-03-13',3.05],['2024-03-20',3.06],['2024-03-27',3.07],
-      ['2024-04-03',3.09],['2024-04-10',3.12],['2024-04-17',3.11],['2024-04-24',3.17],
-      ['2024-05-01',3.17],['2024-05-08',3.21],['2024-05-15',3.23],['2024-05-22',3.24],['2024-05-29',3.30],
-      ['2024-06-05',3.31],['2024-06-12',3.35],['2024-06-19',3.34],['2024-06-26',3.41],
-      ['2024-07-03',3.42],['2024-07-10',3.43],['2024-07-17',3.43],['2024-07-24',3.45],['2024-07-31',3.45],
-      ['2024-08-07',3.44],['2024-08-14',3.45],['2024-08-21',3.46],['2024-08-28',3.51],
-      ['2024-09-04',3.51],['2024-09-11',3.53],['2024-09-18',3.53],['2024-09-25',3.54],
-      ['2024-10-02',3.44],['2024-10-09',3.57],['2024-10-16',3.59],['2024-10-23',3.62],['2024-10-30',3.65],
-      ['2024-11-06',3.66],['2024-11-13',3.68],['2024-11-20',3.59],['2024-11-27',3.71],
-      ['2024-12-04',3.72],['2024-12-11',3.77],['2024-12-18',3.78],['2024-12-25',3.79],
-      ['2025-01-01',3.83],['2025-01-08',3.84],['2025-01-15',3.86],['2025-01-22',3.89],['2025-01-29',3.91],
-      ['2025-02-05',3.93],['2025-02-12',3.94],['2025-02-19',3.95],['2025-02-26',3.97],
-      ['2025-03-05',3.96],['2025-03-12',3.97],['2025-03-19',3.97],['2025-03-26',3.97],
-      ['2025-04-02',3.98],['2025-04-09',3.99],['2025-04-16',3.99],['2025-04-23',3.99],['2025-04-30',4.01],
-      ['2025-05-07',4.02],['2025-05-14',4.02],['2025-05-21',4.03],['2025-05-28',4.03],
-      ['2025-06-04',4.04],['2025-06-11',4.05],['2025-06-18',4.06],['2025-06-25',4.05],
-      ['2025-07-02',4.05],['2025-07-09',4.06],['2025-07-16',4.06],['2025-07-23',4.06],['2025-07-30',4.06],
-      ['2025-08-06',4.06],['2025-08-13',4.06],['2025-08-20',4.06],['2025-08-27',4.06],
-      ['2025-09-03',4.06],['2025-09-10',4.06],['2025-09-17',4.06],['2025-09-24',4.06],
-      ['2025-10-01',4.07],['2025-10-08',4.08],['2025-10-15',4.05],['2025-10-22',4.06],['2025-10-29',4.07],
-      ['2025-11-05',4.08],['2025-11-12',4.09],['2025-11-19',4.10],['2025-11-26',4.11],
-      ['2025-12-03',4.10],['2025-12-10',4.12],['2025-12-17',4.14],['2025-12-24',4.14],['2025-12-31',4.14],
-      ['2026-01-07',4.14],['2026-01-14',4.14],['2026-01-21',4.15],['2026-01-28',4.16],
-      ['2026-02-04',4.17],['2026-02-11',4.18],['2026-02-18',4.19],['2026-02-25',4.18],
-      ['2026-03-04',4.19],['2026-03-11',4.19],['2026-03-18',4.19],['2026-03-25',4.20],
-      ['2026-04-01',4.20],['2026-04-08',4.20],['2026-04-15',4.22],['2026-04-22',4.22],['2026-04-29',4.22],
-      ['2026-05-06',4.22],['2026-05-13',4.23],['2026-05-20',4.23],['2026-05-27',4.24],
-      ['2026-06-03',4.25],['2026-06-10',4.25],['2026-06-17',4.26]
-    ];
-
     const beep = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
     beep.preload = 'auto';
 
     const selected = Object.fromEntries(allDirections.map(d => [d.key, true]));
 
     const els = {
-      config: document.getElementById('configContainer'),
-      homeStartSlot: document.getElementById('homeStartSlot'),
-      sofiaStartSlot: document.getElementById('sofiaStartSlot'),
+      main: document.getElementById('mainContainer'),
+      ghostingPage: document.getElementById('ghostingPage'),
+      profilePage: document.getElementById('profilePage'),
+      ghostingTabBtn: document.getElementById('ghostingTabBtn'),
+      profileTabBtn: document.getElementById('profileTabBtn'),
+      currentPlayerPill: document.getElementById('currentPlayerPill'),
 
       drill: document.getElementById('drillView'),
       end: document.getElementById('endView'),
@@ -839,9 +819,12 @@
       error: document.getElementById('error-message'),
       sheetStatus: document.getElementById('sheetStatus'),
 
-      codeInput: document.getElementById('codeInput'),
-      applyCode: document.getElementById('applyCodeBtn'),
-      welcome: document.getElementById('welcomeMessage'),
+      playerSearchInput: document.getElementById('playerSearchInput'),
+      loadProfile: document.getElementById('loadProfileBtn'),
+      profileStatus: document.getElementById('profileStatus'),
+      profileDisplayNameInput: document.getElementById('profileDisplayNameInput'),
+      saveProfileName: document.getElementById('saveProfileNameBtn'),
+      clearCurrentProfile: document.getElementById('clearCurrentProfileBtn'),
 
       setsInput: document.getElementById('setsInput'),
       movesInput: document.getElementById('movesInput'),
@@ -855,8 +838,6 @@
       oldRatingInput: document.getElementById('oldRatingInput'),
       clubLockerBulkInput: document.getElementById('clubLockerBulkInput'),
 
-      calculatorBox: document.querySelector('.calculator-box'),
-
       speedMetric: document.getElementById('speedMetric'),
       movesMetric: document.getElementById('movesMetric'),
       activeMetric: document.getElementById('activeMetric'),
@@ -864,12 +845,10 @@
       workRatioMetric: document.getElementById('workRatioMetric'),
       staminaMetric: document.getElementById('staminaMetric'),
 
-      progressSection: document.getElementById('progressSection'),
       progressRows: document.getElementById('progressRows'),
       addProgress: document.getElementById('addProgressBtn'),
       addOldRating: document.getElementById('addOldRatingBtn'),
       importClubLocker: document.getElementById('importClubLockerBtn'),
-      saveProfile: document.getElementById('saveProfileBtn'),
       resetProfile: document.getElementById('resetProfileBtn'),
       resyncSheets: document.getElementById('resyncSheetsBtn'),
       progressChart: document.getElementById('progressChart'),
@@ -881,6 +860,327 @@
     let progressChart = null;
     let ratingProgressChart = null;
 
+    let currentPlayer = getSavedCurrentPlayer();
+
+    function slugifyName(name){
+      return String(name || 'guest')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'guest';
+    }
+
+    function getGuestPlayer(){
+      return {
+        playerName: 'Guest',
+        playerId: 'guest',
+        isSofia: false
+      };
+    }
+
+    function getSavedCurrentPlayer(){
+      const saved = localStorage.getItem('ghostingCurrentPlayer');
+
+      if(saved){
+        try{
+          return JSON.parse(saved);
+        } catch(e){
+          return getGuestPlayer();
+        }
+      }
+
+      return getGuestPlayer();
+    }
+
+    function setCurrentPlayer(player){
+      currentPlayer = player;
+      localStorage.setItem('ghostingCurrentPlayer', JSON.stringify(currentPlayer));
+
+      els.currentPlayerPill.textContent = `Current player: ${currentPlayer.playerName}`;
+
+      if(currentPlayer.isSofia){
+        document.body.classList.add('sofia-mode');
+      } else {
+        document.body.classList.remove('sofia-mode');
+      }
+
+      els.profileDisplayNameInput.value = currentPlayer.playerName === 'Guest' ? '' : currentPlayer.playerName;
+
+      loadProfileDefaults();
+      renderProgressRows();
+      renderAllCharts();
+    }
+
+    function getProgressStorageKey(){
+      return `ghostingProgress_${currentPlayer.playerId}`;
+    }
+
+    function getProfileStorageKey(){
+      return `ghostingProfile_${currentPlayer.playerId}`;
+    }
+
+    function defaultProfile(){
+      return {
+        sets: 3,
+        movesPerSet: 10,
+        reactionTime: 3,
+        repositionTime: 0.2,
+        restBetweenSets: 45,
+        distanceToBall: 4.5,
+        rating: '',
+        progressDate: ''
+      };
+    }
+
+    function sofiaDefaultProfile(){
+      return {
+        sets: 10,
+        movesPerSet: 12,
+        reactionTime: 3,
+        repositionTime: 0.2,
+        restBetweenSets: 45,
+        distanceToBall: 4.5,
+        rating: 4.26,
+        progressDate: ''
+      };
+    }
+
+    function getProfile(){
+      const saved = localStorage.getItem(getProfileStorageKey());
+
+      if(saved){
+        try{
+          return JSON.parse(saved);
+        } catch(e){
+          return currentPlayer.isSofia ? sofiaDefaultProfile() : defaultProfile();
+        }
+      }
+
+      return currentPlayer.isSofia ? sofiaDefaultProfile() : defaultProfile();
+    }
+
+    function saveProfileLocally(profile){
+      localStorage.setItem(getProfileStorageKey(), JSON.stringify(profile));
+    }
+
+    function loadProfileDefaults(){
+      const profile = getProfile();
+
+      els.setsInput.value = profile.sets;
+      els.movesInput.value = profile.movesPerSet;
+      els.secondsInput.value = profile.reactionTime;
+      els.moveBreakInput.value = profile.repositionTime;
+      els.setBreakInput.value = profile.restBetweenSets;
+      els.distanceInput.value = profile.distanceToBall;
+      els.ratingInput.value = profile.rating || '';
+      els.dateInput.value = profile.progressDate || '';
+
+      calculatePerformance();
+    }
+
+    function saveCurrentProfileSettings(){
+      const profile = {
+        sets: getNumber(els.setsInput),
+        movesPerSet: getNumber(els.movesInput),
+        reactionTime: getNumber(els.secondsInput),
+        repositionTime: getNumber(els.moveBreakInput),
+        restBetweenSets: getNumber(els.setBreakInput),
+        distanceToBall: getNumber(els.distanceInput),
+        rating: getNumber(els.ratingInput) || '',
+        progressDate: els.dateInput.value
+      };
+
+      saveProfileLocally(profile);
+
+      saveToGoogleSheets({
+        type: 'profile',
+        progressDate: profile.progressDate,
+        sets: profile.sets,
+        movesPerSet: profile.movesPerSet,
+        reactionTime: profile.reactionTime,
+        repositionTime: profile.repositionTime,
+        restBetweenSets: profile.restBetweenSets,
+        distanceToBall: profile.distanceToBall,
+        speed: '',
+        totalMoves: '',
+        workRatio: '',
+        stamina: '',
+        rating: profile.rating,
+        notes: 'Saved player profile settings'
+      });
+    }
+
+    function getProgressData(){
+      const saved = localStorage.getItem(getProgressStorageKey());
+
+      if(saved){
+        try{
+          const data = JSON.parse(saved);
+
+          return normalizeProgressData(data);
+        } catch(e){
+          return [];
+        }
+      }
+
+      return [];
+    }
+
+    function normalizeProgressData(data){
+      return (data || []).map(item => ({
+        month: item.month || item.progressDate || '',
+        speed: item.speed === null || item.speed === undefined || item.speed === '' ? null : Number(item.speed),
+        rating: item.rating === null || item.rating === undefined || item.rating === '' ? '' : Number(item.rating),
+        notes: item.notes || '',
+        type: item.type || 'progress'
+      })).filter(item => item.month || item.speed || item.rating);
+    }
+
+    function saveProgressData(data){
+      localStorage.setItem(getProgressStorageKey(), JSON.stringify(normalizeProgressData(data)));
+    }
+
+    function rowsToProgressData(rows){
+      return normalizeProgressData((rows || []).map(row => ({
+        month: row.ProgressDate || row.progressDate || '',
+        speed: row.Speed || row.speed || '',
+        rating: row.Rating || row.rating || '',
+        notes: row.Notes || row.notes || '',
+        type: row.Type || row.type || ''
+      })));
+    }
+
+    function switchTab(tabName){
+      if(tabName === 'ghosting'){
+        els.ghostingPage.classList.add('active');
+        els.profilePage.classList.remove('active');
+        els.ghostingTabBtn.classList.add('active');
+        els.profileTabBtn.classList.remove('active');
+      } else {
+        els.profilePage.classList.add('active');
+        els.ghostingPage.classList.remove('active');
+        els.profileTabBtn.classList.add('active');
+        els.ghostingTabBtn.classList.remove('active');
+      }
+    }
+
+    function loadPlayerFromSheet(playerId){
+      return new Promise((resolve, reject) => {
+        const callbackName = `ghostingCallback_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+
+        window[callbackName] = function(response){
+          delete window[callbackName];
+          script.remove();
+          resolve(response);
+        };
+
+        const script = document.createElement('script');
+        const url = new URL(GOOGLE_SHEETS_WEB_APP_URL);
+
+        url.searchParams.set('action', 'loadPlayer');
+        url.searchParams.set('playerId', playerId);
+        url.searchParams.set('callback', callbackName);
+
+        script.src = url.toString();
+        script.onerror = function(){
+          delete window[callbackName];
+          script.remove();
+          reject(new Error('Could not load profile from Google Sheets.'));
+        };
+
+        document.body.appendChild(script);
+      });
+    }
+
+    async function loadOrCreateProfile(){
+      const raw = els.playerSearchInput.value.trim();
+
+      if(!raw){
+        els.profileStatus.textContent = 'Type a player name first.';
+        return;
+      }
+
+      let player;
+
+      if(raw.toLowerCase() === SOFIA_ACCESS_KEY){
+        player = {
+          playerName: 'Sofia',
+          playerId: 'sofia-admin',
+          isSofia: true
+        };
+      } else {
+        player = {
+          playerName: raw,
+          playerId: slugifyName(raw),
+          isSofia: false
+        };
+      }
+
+      setCurrentPlayer(player);
+      els.profileStatus.textContent = `Loading ${player.playerName}...`;
+
+      try{
+        const response = await loadPlayerFromSheet(player.playerId);
+
+        if(response && response.ok && Array.isArray(response.rows) && response.rows.length > 0){
+          const sheetProgress = rowsToProgressData(response.rows);
+          saveProgressData(sheetProgress);
+          renderProgressRows();
+          renderAllCharts();
+
+          els.profileStatus.textContent = `Loaded ${player.playerName} from Google Sheets.`;
+        } else {
+          els.profileStatus.textContent = `No saved sheet profile found. Created local profile for ${player.playerName}.`;
+        }
+      } catch(e){
+        console.error(e);
+        els.profileStatus.textContent = `Created local profile for ${player.playerName}. Google Sheets loading did not respond.`;
+      }
+
+      switchTab('profile');
+    }
+
+    function saveProfileName(){
+      const newName = els.profileDisplayNameInput.value.trim();
+
+      if(!newName){
+        els.profileStatus.textContent = 'Enter a display name first.';
+        return;
+      }
+
+      const updatedPlayer = {
+        ...currentPlayer,
+        playerName: currentPlayer.isSofia ? 'Sofia' : newName,
+        playerId: currentPlayer.isSofia ? 'sofia-admin' : slugifyName(newName)
+      };
+
+      setCurrentPlayer(updatedPlayer);
+
+      saveToGoogleSheets({
+        type: 'profileName',
+        progressDate: '',
+        sets: '',
+        movesPerSet: '',
+        reactionTime: '',
+        repositionTime: '',
+        restBetweenSets: '',
+        distanceToBall: '',
+        speed: '',
+        totalMoves: '',
+        workRatio: '',
+        stamina: '',
+        rating: '',
+        notes: `Saved profile name: ${updatedPlayer.playerName}`
+      });
+
+      els.profileStatus.textContent = `Saved profile as ${updatedPlayer.playerName}.`;
+    }
+
+    function clearCurrentProfile(){
+      setCurrentPlayer(getGuestPlayer());
+      els.profileStatus.textContent = 'Using Guest mode.';
+    }
+
     async function saveToGoogleSheets(payload){
       els.sheetStatus.textContent = 'Sending to Google Sheets...';
 
@@ -888,6 +1188,8 @@
         const finalPayload = {
           timestamp: new Date().toISOString(),
           source: 'Squash Ghosting Drill Website',
+          playerName: currentPlayer.playerName,
+          playerId: currentPlayer.playerId,
           ...payload
         };
 
@@ -907,14 +1209,6 @@
         els.sheetStatus.textContent = 'Google Sheets save failed. Check Apps Script deployment.';
         return false;
       }
-    }
-
-    function moveStartButtonToSofiaMode(){
-      els.sofiaStartSlot.appendChild(els.start);
-    }
-
-    function moveStartButtonToHomeMode(){
-      els.homeStartSlot.appendChild(els.start);
     }
 
     function buildButtons(){
@@ -992,10 +1286,7 @@
 
       const today = new Date();
 
-      return today.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric'
-      });
+      return today.toISOString().slice(0, 10);
     }
 
     function calculatePerformance(){
@@ -1043,6 +1334,8 @@
       els.workRatioMetric.textContent = `${workRatio.toFixed(0)}%`;
       els.staminaMetric.textContent = staminaLabel;
 
+      saveCurrentProfileSettings();
+
       return {
         speed,
         totalMoves,
@@ -1055,161 +1348,23 @@
       };
     }
 
-    function defaultSofiaProfile(){
-      return {
-        sets: 10,
-        movesPerSet: 12,
-        reactionTime: 3,
-        repositionTime: 0.2,
-        restBetweenSets: 45,
-        distanceToBall: 4.5,
-        rating: 4.00,
-        progressDate: ''
-      };
-    }
-
-    function getSofiaProfile(){
-      const saved = localStorage.getItem('sofiaGhostingProfile');
-
-      if(saved){
-        try{
-          return JSON.parse(saved);
-        } catch(e){
-          return defaultSofiaProfile();
-        }
-      }
-
-      return defaultSofiaProfile();
-    }
-
-    function saveSofiaProfile(){
-      const rating = cleanRating(getNumber(els.ratingInput));
-
-      const profile = {
-        sets: getNumber(els.setsInput),
-        movesPerSet: getNumber(els.movesInput),
-        reactionTime: getNumber(els.secondsInput),
-        repositionTime: getNumber(els.moveBreakInput),
-        restBetweenSets: getNumber(els.setBreakInput),
-        distanceToBall: getNumber(els.distanceInput),
-        rating: rating,
-        progressDate: els.dateInput.value
-      };
-
-      localStorage.setItem('sofiaGhostingProfile', JSON.stringify(profile));
-
-      saveToGoogleSheets({
-        type: 'profile',
-        sets: profile.sets,
-        movesPerSet: profile.movesPerSet,
-        reactionTime: profile.reactionTime,
-        repositionTime: profile.repositionTime,
-        restBetweenSets: profile.restBetweenSets,
-        distanceToBall: profile.distanceToBall,
-        speed: '',
-        totalMoves: '',
-        workRatio: '',
-        stamina: '',
-        rating: profile.rating,
-        progressDate: profile.progressDate,
-        notes: 'Saved Sofia profile'
-      });
-
-      els.welcome.style.display = 'block';
-      els.welcome.innerHTML = `
-        <span class="sparkle">💜 Sofia profile saved 💜</span><br>
-        Saved locally and sent to Google Sheets.
-      `;
-
-      calculatePerformance();
-    }
-
-    function loadSofiaProfile(){
-      const profile = getSofiaProfile();
-
-      els.setsInput.value = profile.sets;
-      els.movesInput.value = profile.movesPerSet;
-      els.secondsInput.value = profile.reactionTime;
-      els.moveBreakInput.value = profile.repositionTime;
-      els.setBreakInput.value = profile.restBetweenSets;
-      els.distanceInput.value = profile.distanceToBall;
-      els.ratingInput.value = profile.rating || 4.00;
-      els.dateInput.value = profile.progressDate || '';
-
-      calculatePerformance();
-    }
-
-    function resetSofiaProfile(){
-      localStorage.removeItem('sofiaGhostingProfile');
-
-      const profile = defaultSofiaProfile();
-
-      els.setsInput.value = profile.sets;
-      els.movesInput.value = profile.movesPerSet;
-      els.secondsInput.value = profile.reactionTime;
-      els.moveBreakInput.value = profile.repositionTime;
-      els.setBreakInput.value = profile.restBetweenSets;
-      els.distanceInput.value = profile.distanceToBall;
-      els.ratingInput.value = profile.rating;
-      els.dateInput.value = profile.progressDate;
-
-      calculatePerformance();
-
-      els.welcome.style.display = 'block';
-      els.welcome.innerHTML = `
-        <span class="sparkle">💜 Sofia profile reset 💜</span><br>
-        Back to original training stats.
-      `;
-    }
-
-    function defaultProgressData(){
-      return clubLockerDefaultRatings.map(([month, rating]) => ({
-        month,
-        speed: null,
-        rating,
-        notes: 'ClubLocker import · Universal Squash Rating',
-        type: 'clublockerRating'
-      }));
-    }
-
-    function getProgressData(){
-      const saved = localStorage.getItem('sofiaGhostingProgressSpeed');
-
-      if(saved){
-        try{
-          const data = JSON.parse(saved);
-
-          return data.map(item => ({
-            month: item.month,
-            speed: item.speed === null || item.speed === undefined || item.speed === '' ? null : Number(item.speed),
-            rating: item.rating ? Number(item.rating) : 4.00,
-            notes: item.notes || '',
-            type: item.type || 'progress'
-          }));
-        } catch(e){
-          return defaultProgressData();
-        }
-      }
-
-      return defaultProgressData();
-    }
-
-    function saveProgressData(data){
-      localStorage.setItem('sofiaGhostingProgressSpeed', JSON.stringify(data));
-    }
-
     function renderProgressRows(){
       const data = getProgressData();
       els.progressRows.innerHTML = '';
+
+      if(data.length === 0){
+        els.progressRows.innerHTML = '<p class="muted-note">No progress saved for this player yet.</p>';
+        return;
+      }
 
       data.forEach((item, index) => {
         const row = document.createElement('div');
         row.className = 'progress-row';
 
         row.innerHTML = `
-          <input type="text" value="${item.month}" placeholder="Date / Label" data-index="${index}" data-field="month">
+          <input type="text" value="${item.month || ''}" placeholder="Date / Label" data-index="${index}" data-field="month">
           <input type="number" value="${item.speed === null ? '' : item.speed}" step="0.01" placeholder="Speed m/s" data-index="${index}" data-field="speed">
-          <input type="number" value="${item.rating}" min="0" step="0.01" placeholder="USR" data-index="${index}" data-field="rating">
+          <input type="number" value="${item.rating === '' ? '' : item.rating}" min="0" step="0.01" placeholder="USR" data-index="${index}" data-field="rating">
           <input type="text" value="${item.notes || ''}" placeholder="Notes" data-index="${index}" data-field="notes">
           <button type="button" data-delete="${index}">Delete</button>
         `;
@@ -1242,15 +1397,16 @@
       rows.forEach(row => {
         const month = row.querySelector('[data-field="month"]').value;
         const speedRaw = row.querySelector('[data-field="speed"]').value;
-        const rating = parseFloat(row.querySelector('[data-field="rating"]').value);
+        const ratingRaw = row.querySelector('[data-field="rating"]').value;
         const notes = row.querySelector('[data-field="notes"]').value;
 
         const speed = speedRaw === '' ? null : parseFloat(speedRaw);
+        const rating = ratingRaw === '' ? '' : parseFloat(ratingRaw);
 
         data.push({
           month,
           speed: speed === null || isNaN(speed) ? null : speed,
-          rating: isNaN(rating) ? 0 : cleanRating(rating),
+          rating: rating === '' || isNaN(rating) ? '' : cleanRating(rating),
           notes,
           type: speed === null || isNaN(speed) ? 'ratingOnly' : 'progress'
         });
@@ -1375,20 +1531,12 @@
       const current = calculatePerformance();
 
       if(!current){
-        els.error.textContent = '⚠️ Fill in valid numbers first.';
+        els.sheetStatus.textContent = 'Fill in valid numbers first.';
         return;
       }
 
       let rating = getNumber(els.ratingInput);
-
-      if(rating <= 0){
-        els.error.textContent = '⚠️ Add your Universal Squash Rating.';
-        return;
-      }
-
-      rating = cleanRating(rating);
-      els.ratingInput.value = rating;
-      els.error.textContent = '';
+      rating = rating > 0 ? cleanRating(rating) : '';
 
       const data = getProgressData();
       const label = getProgressDateLabel();
@@ -1409,6 +1557,7 @@
 
       saveToGoogleSheets({
         type: 'progress',
+        progressDate: label,
         sets: getNumber(els.setsInput),
         movesPerSet: getNumber(els.movesInput),
         reactionTime: getNumber(els.secondsInput),
@@ -1420,15 +1569,10 @@
         workRatio: Number(current.workRatio.toFixed(0)),
         stamina: current.staminaLabel,
         rating: rating,
-        progressDate: label,
         notes: notes
       });
 
-      els.welcome.style.display = 'block';
-      els.welcome.innerHTML = `
-        <span class="sparkle">📈 Progress saved</span><br>
-        Added ${current.speed.toFixed(2)} m/s with USR ${rating}.
-      `;
+      els.sheetStatus.textContent = `Added progress for ${currentPlayer.playerName}.`;
     }
 
     function addOldRating(){
@@ -1436,17 +1580,16 @@
       let rating = getNumber(els.oldRatingInput);
 
       if(!date){
-        els.error.textContent = '⚠️ Add a date for the old squash rating.';
+        els.sheetStatus.textContent = 'Add a date for the old rating.';
         return;
       }
 
       if(rating <= 0){
-        els.error.textContent = '⚠️ Add an old Universal Squash Rating.';
+        els.sheetStatus.textContent = 'Add an old Universal Squash Rating.';
         return;
       }
 
       rating = cleanRating(rating);
-      els.error.textContent = '';
 
       const data = getProgressData();
 
@@ -1464,6 +1607,7 @@
 
       saveToGoogleSheets({
         type: 'oldRating',
+        progressDate: date,
         sets: '',
         movesPerSet: '',
         reactionTime: '',
@@ -1475,17 +1619,11 @@
         workRatio: '',
         stamina: '',
         rating: rating,
-        progressDate: date,
         notes: 'Old squash rating entry'
       });
 
-      els.welcome.style.display = 'block';
-      els.welcome.innerHTML = `
-        <span class="sparkle">📈 Old rating saved</span><br>
-        Added USR ${rating} from ${date} to your rating chart.
-      `;
-
       els.oldRatingInput.value = '';
+      els.sheetStatus.textContent = `Added old rating for ${currentPlayer.playerName}.`;
     }
 
     function parseClubLockerRatings(rawText){
@@ -1563,18 +1701,16 @@
       const rawText = els.clubLockerBulkInput.value.trim();
 
       if(!rawText){
-        els.error.textContent = '⚠️ Paste your ClubLocker rating history first.';
+        els.sheetStatus.textContent = 'Paste ClubLocker rating history first.';
         return;
       }
 
       const importedEntries = parseClubLockerRatings(rawText);
 
       if(importedEntries.length === 0){
-        els.error.textContent = '⚠️ Could not find valid ClubLocker rating rows.';
+        els.sheetStatus.textContent = 'Could not find valid ClubLocker rating rows.';
         return;
       }
-
-      els.error.textContent = '';
 
       const currentData = getProgressData();
 
@@ -1588,11 +1724,12 @@
       renderProgressRows();
       renderAllCharts();
 
-      els.sheetStatus.textContent = `Importing ${importedEntries.length} ClubLocker ratings to Google Sheets...`;
+      els.sheetStatus.textContent = `Importing ${importedEntries.length} ClubLocker ratings for ${currentPlayer.playerName}...`;
 
       for(const entry of importedEntries){
         await saveToGoogleSheets({
           type: 'clublockerRating',
+          progressDate: entry.month,
           sets: '',
           movesPerSet: '',
           reactionTime: '',
@@ -1604,34 +1741,27 @@
           workRatio: '',
           stamina: '',
           rating: entry.rating,
-          progressDate: entry.month,
           notes: entry.notes
         });
       }
 
-      els.sheetStatus.textContent = `Imported ${importedEntries.length} ClubLocker ratings. Check Google Sheets to confirm.`;
-
-      els.welcome.style.display = 'block';
-      els.welcome.innerHTML = `
-        <span class="sparkle">📈 ClubLocker history imported</span><br>
-        Added ${importedEntries.length} rating entries to your USR progress chart.
-      `;
+      els.sheetStatus.textContent = `Imported ${importedEntries.length} ratings for ${currentPlayer.playerName}.`;
     }
 
     async function resyncAllHistoryToGoogleSheets(){
       const data = getProgressData();
 
       if(!data.length){
-        els.error.textContent = '⚠️ No history found to resync.';
+        els.sheetStatus.textContent = 'No history found to resync.';
         return;
       }
 
-      els.error.textContent = '';
-      els.sheetStatus.textContent = `Resyncing ${data.length} history entries to Google Sheets...`;
+      els.sheetStatus.textContent = `Resyncing ${data.length} entries for ${currentPlayer.playerName}...`;
 
       for(const entry of data){
         await saveToGoogleSheets({
           type: entry.type || 'historyResync',
+          progressDate: entry.month || '',
           sets: '',
           movesPerSet: '',
           reactionTime: '',
@@ -1643,62 +1773,26 @@
           workRatio: '',
           stamina: '',
           rating: entry.rating || '',
-          progressDate: entry.month || '',
           notes: `Resynced history · ${entry.notes || ''}`
         });
       }
 
-      els.sheetStatus.textContent = `Resynced ${data.length} entries to Google Sheets. Check your sheet.`;
-
-      els.welcome.style.display = 'block';
-      els.welcome.innerHTML = `
-        <span class="sparkle">📤 Google Sheets resync complete</span><br>
-        Sent ${data.length} saved history entries again.
-      `;
+      els.sheetStatus.textContent = `Resynced ${data.length} entries for ${currentPlayer.playerName}.`;
     }
 
-    function showSofiaExtras(){
-      document.body.classList.add('sofia-mode');
-      els.calculatorBox.style.display = 'block';
-      els.progressSection.style.display = 'block';
+    function resetLocalProfileData(){
+      if(!confirm(`Reset local data for ${currentPlayer.playerName}? This only clears this browser, not Google Sheets.`)){
+        return;
+      }
 
+      localStorage.removeItem(getProgressStorageKey());
+      localStorage.removeItem(getProfileStorageKey());
+
+      loadProfileDefaults();
       renderProgressRows();
       renderAllCharts();
-      calculatePerformance();
-    }
 
-    function applyTrainingCode(){
-      const code = els.codeInput.value.trim().toLowerCase();
-
-      if(code === 'sofiahtang'){
-        loadSofiaProfile();
-        moveStartButtonToSofiaMode();
-
-        els.error.textContent = '';
-
-        els.welcome.style.display = 'block';
-        els.welcome.innerHTML = `
-          <span class="sparkle">💜 Welcome back, Sofia 💜</span><br>
-          Your saved profile has been loaded.
-        `;
-
-        showSofiaExtras();
-
-        els.applyCode.textContent = 'Opened ✓';
-
-        setTimeout(() => {
-          els.applyCode.textContent = 'Open';
-        }, 1800);
-
-      } else {
-        moveStartButtonToHomeMode();
-
-        els.welcome.style.display = 'none';
-        els.calculatorBox.style.display = 'none';
-        els.progressSection.style.display = 'none';
-        document.body.classList.remove('sofia-mode');
-        els.error.textContent = '⚠️ Invalid access key.';
-      }
+      els.sheetStatus.textContent = `Local data reset for ${currentPlayer.playerName}.`;
     }
 
     function validate(){
@@ -1788,7 +1882,7 @@
       controller = new AbortController();
       const { signal } = controller;
 
-      els.config.style.display = 'none';
+      els.main.style.display = 'none';
       els.end.classList.remove('active');
       els.drill.classList.add('active');
       els.start.disabled = true;
@@ -1867,7 +1961,7 @@
       els.start.disabled = false;
       els.drill.classList.remove('active');
       els.end.classList.remove('active');
-      els.config.style.display = 'block';
+      els.main.style.display = 'block';
 
       els.setStatus.textContent = '';
       els.direction.textContent = '';
@@ -1880,12 +1974,13 @@
 
     function restart(){
       els.end.classList.remove('active');
-      els.config.style.display = 'block';
+      els.main.style.display = 'block';
       els.start.disabled = false;
     }
 
     buildButtons();
     preloadImages();
+    setCurrentPlayer(currentPlayer);
 
     [
       els.setsInput,
@@ -1898,22 +1993,27 @@
       input.addEventListener('input', calculatePerformance);
     });
 
+    els.ghostingTabBtn.onclick = () => switchTab('ghosting');
+    els.profileTabBtn.onclick = () => switchTab('profile');
+
+    els.loadProfile.onclick = loadOrCreateProfile;
+    els.saveProfileName.onclick = saveProfileName;
+    els.clearCurrentProfile.onclick = clearCurrentProfile;
+
     els.start.onclick = run;
     els.stop.onclick = stop;
     els.restart.onclick = restart;
     els.skipBreak.onclick = skipBreak;
-    els.applyCode.onclick = applyTrainingCode;
 
     els.addProgress.onclick = addProgressMonth;
     els.addOldRating.onclick = addOldRating;
     els.importClubLocker.onclick = importClubLockerHistory;
     els.resyncSheets.onclick = resyncAllHistoryToGoogleSheets;
-    els.saveProfile.onclick = saveSofiaProfile;
-    els.resetProfile.onclick = resetSofiaProfile;
+    els.resetProfile.onclick = resetLocalProfileData;
 
-    els.codeInput.addEventListener('keydown', function(e){
+    els.playerSearchInput.addEventListener('keydown', function(e){
       if(e.key === 'Enter'){
-        applyTrainingCode();
+        loadOrCreateProfile();
       }
     });
   </script>
