@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Squash Ghosting Drill</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f7e7ce;
+      font-family: 'Segoe UI', sans-serif;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3.5em;
+      color: #722f37;
+      text-shadow: 1px 1px 2px #f2acb3;
+      margin-bottom: 0.5em;
+    }
+
+    #floatingGhost {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 80px;
+      opacity: 0.9;
+      z-index: 10;
+      animation: floatGhost 3s ease-in-out infinite;
+    }
+
+    @keyframes floatGhost {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0); }
+    }
+
+    #configContainer {
+      transition: opacity 0.5s ease;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    label, input {
+      font-family: 'Times New Roman', serif;
+      font-size: 1.2em;
+      margin: 5px;
+    }
+
+    button {
+      font-size: 1.2em;
+      padding: 8px 16px;
+      font-family: 'Times New Roman', serif;
+      margin: 10px;
+      cursor: pointer;
+    }
+
+    #drillView {
+      display: none;
+      animation: zoomIn 0.8s ease forwards;
+    }
+
+    #drillView.active {
+      display: block;
+    }
+
+    @keyframes zoomIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #direction {
+      font-size: 2.6em;
+      font-weight: 600;
+      margin-bottom: 0.3em;
+      color: #2c3e50;
+    }
+
+    #countdown {
+      font-size: 4em;
+      color: #8e44ad;
+      margin: 0.8em 0;
+    }
+
+    #image {
+      width: 85vw;
+      max-width: 550px;
+      height: auto;
+      display: block;
+      margin: 0 auto 1em auto;
+    }
+
+    #statusMessage {
+      font-size: 1.5em;
+      font-weight: 500;
+      margin-top: 1em;
+      color: #7a4069;
+    }
+
+    #stopButton {
+      margin-top: 20px;
+      padding: 10px 25px;
+      font-size: 1.2em;
+      font-family: 'Times New Roman', serif;
+      background-color: #b35a7a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #stopButton:hover {
+      background-color: #8e3c5c;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://i.pinimg.com/originals/99/37/30/993730e1d3019ac8611e2401b63fbc16.gif"
+    alt="Floating Ghost"
+    id="floatingGhost" />
+
+  <h1>Squash Ghosting Drill</h1>
+
+  <div id="configContainer">
+    <label>Sets:</label><input type="number" id="setsInput" min="1" value="3"/>
+    <label>Moves per set:</label><input type="number" id="movesInput" min="1" value="15"/><br><br>
+
+    <label>Seconds per move:</label><input type="number" id="secondsInput" min="1" value="3"/>
+    <label>Break between moves (s):</label><input type="number" id="moveBreakInput" min="0" value="1"/>
+    <label>Break between sets (s):</label><input type="number" id="setBreakInput" min="1" value="6"/>
+    <div>
+      <input type="checkbox" id="motivationCheckbox" checked/>
+      <label for="motivationCheckbox">Enable Motivational Messages</label>
+    </div><br>
+    <button onclick="startDrill()">Start Drill</button>
+  </div>
+
+  <div id="drillView">
+    <div id="direction"></div>
+    <div id="countdown"></div>
+    <img id="image" src="" alt="Direction Image" />
+    <div id="statusMessage"></div>
+    <button onclick="stopDrill()" id="stopButton">Stop</button>
+  </div>
+
+  <script>
+    const directions = [
+      { name: "Front Left",  img: "images/front-left.png" },
+      { name: "Front Right", img: "images/front-right.png" },
+      { name: "Side Left",   img: "images/side-left.png" },
+      { name: "Side Right",  img: "images/side-right.png" },
+      { name: "Back Left",   img: "images/back-left.png" },
+      { name: "Back Right",  img: "images/back-right.png" }
+    ];
+
+    const motivationalLines = [
+      { text: "Your break is over. Cry later. Move now." },
+      { text: "The floor misses you. Go make it sweat!" },
+      { text: "Congratulations, you are now… still not done!" },
+      { text: "Your coach called. They said move!" },
+      { audio: "audio/run-faster.mp3", label: "Run Faster, Sofia Test" },
+      { audio: "audio/run-faster.mp3", label: "Run Faster, Sofia Test" }
+    ];
+
+    let currentSet = 0, moveCount = 0, totalSets = 0, movesPerSet = 0,
+        secondsPerMove = 0, breakPerMove = 0, breakPerSet = 0,
+        interval, countdownInterval, stopped = false, motivationOn = true;
+
+    const directionEl = document.getElementById("direction"),
+          countdownEl = document.getElementById("countdown"),
+          imageEl = document.getElementById("image"),
+          motivationCheckbox = document.getElementById("motivationCheckbox"),
+          drillView = document.getElementById("drillView"),
+          configContainer = document.getElementById("configContainer");
+
+    function speak(text) {
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 1.3;
+      u.volume = 1;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    }
+
+    function playBeep() {
+      new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg").play();
+    }
+
+    function playBonk() {
+      new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg").play();
+    }
+
+    function startDrill() {
+      stopped = false; currentSet = 1; moveCount = 0;
+      totalSets = parseInt(document.getElementById("setsInput").value);
+      movesPerSet = parseInt(document.getElementById("movesInput").value);
+      secondsPerMove = parseInt(document.getElementById("secondsInput").value);
+      breakPerMove = parseInt(document.getElementById("moveBreakInput").value);
+      breakPerSet = parseInt(document.getElementById("setBreakInput").value);
+      motivationOn = motivationCheckbox.checked;
+
+      configContainer.classList.add("hide");
+      drillView.classList.add("active");
+
+      runMove();
+    }
+
+    function stopDrill() {
+      stopped = true;
+      clearTimeout(interval);
+      clearInterval(countdownInterval);
+      directionEl.textContent = "Drill Stopped.";
+      imageEl.src = "";
+      countdownEl.textContent = "";
+      speechSynthesis.cancel();
+      drillView.classList.remove("active");
+      configContainer.classList.remove("hide");
+    }
+
+    function runMove() {
+  if (stopped) return;
+  if (moveCount >= movesPerSet) {
+    if (currentSet >= totalSets) {
+      directionEl.style.display = "none";
+      imageEl.style.display = "none";
+      directionEl.textContent = "";
+      imageEl.src = "";
+      countdownEl.textContent = "";
+      return;
+    }
+    runSetBreak(); return;
+  }
+
+  const move = directions[Math.floor(Math.random() * directions.length)];
+  directionEl.style.display = "block";  // show
+  imageEl.style.display = "block";      // show
+  directionEl.textContent = move.name;
+  imageEl.src = move.img;
+  countdownEl.textContent = "";
+  playBeep(); speak(move.name);
+  moveCount++;
+
+  interval = setTimeout(() => {
+    if (stopped) return;
+    // Hide elements during break so no box or empty space remains
+    directionEl.style.display = "none";  
+    imageEl.style.display = "none";
+
+    playBonk(); // bonk after image disappears
+
+    setTimeout(() => {
+      if (!stopped) runMove();
+    }, breakPerMove * 1000);
+  }, secondsPerMove * 1000);
+}
+    function runSetBreak() {
+      currentSet++;
+      moveCount = 0;
+      directionEl.textContent = "Break between sets";
+      imageEl.src = "";
+      let countdown = breakPerSet;
+      countdownEl.textContent = countdown;
+      playBeep();
+
+      countdownInterval = setInterval(() => {
+        if (stopped) {
+          clearInterval(countdownInterval);
+          return;
+        }
+        countdown--;
+        if (countdown > 0) {
+          countdownEl.textContent = countdown;
+          playBeep();
+        } else {
+          clearInterval(countdownInterval);
+          countdownEl.textContent = "";
+          if (motivationOn) {
+            const msgObj = motivationalLines[Math.floor(Math.random() * motivationalLines.length)];
+            if (msgObj.audio) {
+              const audio = new Audio(msgObj.audio);
+              audio.play().catch(e => console.error("Audio play failed:", e));
+              setTimeout(() => { if (!stopped) runMove(); }, 3000);
+            } else {
+              speak(msgObj.text);
+              setTimeout(() => { if (!stopped) runMove(); }, 3000);
+            }
+          } else {
+            playBeep();
+            runMove();
+          }
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Squash Ghosting Drill</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    :root { 
+      --bg:#f7e7ce;
+      --card:#fff8fb;
+      --ink:#2c3e50; 
+      --accent:#8e44ad;
+      --title:#722f37;
+      --button:#b35a7a;
+      --border:#e8b4c7;
+    }
+
+    body.sofia-mode{
+      --bg:#f3e8ff;
+      --card:#faf5ff;
+      --ink:#312e81;
+      --accent:#7c3aed;
+      --title:#6d28d9;
+      --button:#8b5cf6;
+      --border:#c4b5fd;
+    }
+
+    *{ 
+      box-sizing:border-box; 
+    }
+
+    body{ 
+      background:var(--bg); 
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; 
+      color:#333; 
+      text-align:center; 
+      padding:20px; 
+      transition:background .4s ease;
+    }
+
+    h1{ 
+      font-family:'Dancing Script', cursive; 
+      font-size:3rem; 
+      color:var(--title); 
+      text-shadow:1px 1px 2px #f2acb3; 
+      margin:0 0 12px; 
+    }
+
+    body.sofia-mode h1{
+      text-shadow:1px 1px 4px #ddd6fe;
+    }
+
+    #floatingGhost{ 
+      position:fixed; 
+      top:20px; 
+      right:20px; 
+      width:80px; 
+      opacity:.9; 
+      z-index:10; 
+      animation:floatGhost 3s ease-in-out infinite; 
+      pointer-events:none; 
+    }
+
+    @keyframes floatGhost{ 
+      0%{transform:translateY(0)} 
+      50%{transform:translateY(-15px)} 
+      100%{transform:translateY(0)} 
+    }
+
+    #configContainer{ 
+      max-width:720px; 
+      margin:0 auto; 
+    }
+
+    .code-box,
+    .calculator-box,
+    #progressSection{
+      background:var(--card);
+      border:2px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      margin:12px 0 18px;
+      box-shadow:0 6px 18px rgba(114,47,55,0.12);
+      transition:background .4s ease, border .4s ease;
+    }
+
+    .calculator-box,
+    #progressSection{
+      display:none;
+    }
+
+    .top-start-btn{
+      font-size:1.15rem;
+      font-weight:800;
+      padding:12px 22px;
+      margin:6px 0 14px;
+    }
+
+    .subtle-settings-box{
+      padding:10px 14px;
+    }
+
+    .subtle-settings-box details{
+      text-align:left;
+    }
+
+    .subtle-settings-box summary{
+      cursor:pointer;
+      color:var(--title);
+      font-weight:800;
+      text-align:center;
+      list-style:none;
+    }
+
+    .subtle-settings-box summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .subtle-settings-box summary::after{
+      content:"  ⚙";
+      font-size:.9rem;
+    }
+
+    .subtle-settings-box .code-row{
+      margin-top:12px;
+    }
+
+    .code-row{
+      display:flex;
+      gap:8px;
+      justify-content:center;
+      align-items:center;
+    }
+
+    #codeInput{
+      flex:1;
+      padding:10px 12px;
+      border:1px solid #ccc;
+      border-radius:10px;
+      font-size:1rem;
+    }
+
+    #applyCodeBtn{
+      margin-top:0;
+      white-space:nowrap;
+    }
+
+    #sofiaStartSlot{
+      margin-top:10px;
+      text-align:center;
+    }
+
+    #welcomeMessage{
+      display:none;
+      margin-top:12px;
+      padding:14px;
+      border-radius:14px;
+      background:linear-gradient(135deg, #fff0f6, #f3e8ff);
+      color:var(--title);
+      font-weight:900;
+      font-size:1.2rem;
+      animation:popIn .45s ease;
+      box-shadow:0 4px 12px rgba(142,68,173,0.18);
+      text-align:center;
+    }
+
+    body.sofia-mode #welcomeMessage{
+      background:linear-gradient(135deg, #ede9fe, #f5f3ff);
+    }
+
+    @keyframes popIn{
+      0%{ transform:scale(.8); opacity:0; }
+      70%{ transform:scale(1.05); opacity:1; }
+      100%{ transform:scale(1); opacity:1; }
+    }
+
+    .sparkle{
+      animation:sparkle 1.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes sparkle{
+      from{ text-shadow:0 0 4px #fff; }
+      to{ text-shadow:0 0 10px #c084fc, 0 0 18px #a78bfa; }
+    }
+
+    .row{ 
+      display:flex; 
+      align-items:center; 
+      gap:10px; 
+      margin:8px 0; 
+    }
+
+    .row>label{ 
+      flex:1; 
+      text-align:left; 
+      font-weight:600;
+    }
+
+    .row>input{ 
+      flex:1; 
+      padding:8px 10px; 
+      border:1px solid #ccc; 
+      border-radius:8px; 
+    }
+
+    .collapsible-card{
+      background:var(--card);
+      border:2px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      margin:12px 0 18px;
+      box-shadow:0 6px 18px rgba(114,47,55,0.12);
+      transition:background .4s ease, border .4s ease;
+      text-align:center;
+    }
+
+    .collapsible-card > summary{
+      cursor:pointer;
+      list-style:none;
+      font-family:'Dancing Script', cursive;
+      font-size:2.3rem;
+      font-weight:800;
+      color:var(--title);
+    }
+
+    .collapsible-card > summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .collapsible-card > summary::after{
+      content:"  ▾";
+      font-family:system-ui, sans-serif;
+      font-size:1rem;
+    }
+
+    .collapsible-card[open] > summary::after{
+      content:"  ▴";
+    }
+
+    .metric-grid{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .metric{
+      background:white;
+      border:1px solid #eee;
+      border-radius:14px;
+      padding:12px;
+      text-align:left;
+    }
+
+    body.sofia-mode .metric{
+      background:#ffffff;
+      border:1px solid #ddd6fe;
+    }
+
+    .metric-label{
+      font-size:.88rem;
+      color:#666;
+      font-weight:700;
+    }
+
+    .metric-value{
+      font-size:1.35rem;
+      color:var(--accent);
+      font-weight:900;
+      margin-top:4px;
+    }
+
+    .metric-note{
+      font-size:.8rem;
+      color:#777;
+      margin-top:4px;
+    }
+
+    .direction-grid{ 
+      display:grid; 
+      grid-template-rows:repeat(3,auto); 
+      gap:12px; 
+      justify-content:center; 
+      margin:16px 0; 
+    }
+
+    .dir-row{ 
+      display:flex; 
+      justify-content:center; 
+      gap:16px; 
+    }
+
+    .row-head{ 
+      font-weight:700; 
+      color:#444; 
+      margin-top:6px; 
+    }
+
+    .direction-btn{ 
+      width:120px; 
+      height:120px; 
+      border:1px solid #ddd; 
+      border-radius:10px; 
+      background:#fff; 
+      padding:0; 
+      cursor:pointer; 
+    }
+
+    .direction-btn.active{ 
+      outline: 3px solid #0ea5a4; 
+    }
+
+    body.sofia-mode .direction-btn.active{
+      outline:3px solid #a78bfa;
+    }
+
+    .direction-btn img{ 
+      width:100%; 
+      height:100%; 
+      object-fit:contain; 
+    }
+
+    button{ 
+      padding:10px 16px; 
+      border:0; 
+      border-radius:8px; 
+      background:var(--button); 
+      color:#fff; 
+      cursor:pointer; 
+      margin-top:10px; 
+      font-size:1rem;
+      transition:transform .15s ease, background .3s ease;
+    }
+
+    button:hover{ 
+      transform:translateY(-1px); 
+    }
+
+    button:disabled{ 
+      opacity:.6; 
+      cursor:not-allowed; 
+    }
+
+    #error-message{ 
+      color:#c00; 
+      font-weight:700; 
+      min-height:1.2em; 
+      margin-top:6px; 
+    }
+
+    #sheetStatus{
+      color:var(--accent);
+      font-weight:800;
+      margin-top:8px;
+      min-height:1.2em;
+    }
+
+    #progressSection p{
+      margin-top:0;
+    }
+
+    .sofia-inputs{
+      background:white;
+      border-radius:14px;
+      padding:12px;
+      margin:14px 0;
+      border:1px solid #eee;
+    }
+
+    .nested-details{
+      text-align:left;
+    }
+
+    .nested-details > summary{
+      cursor:pointer;
+      font-weight:900;
+      color:var(--title);
+      text-align:center;
+      padding:6px;
+      list-style:none;
+    }
+
+    .nested-details > summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .nested-details > summary::after{
+      content:"  ▾";
+    }
+
+    .nested-details[open] > summary::after{
+      content:"  ▴";
+    }
+
+    #clubLockerBulkInput{
+      width:100%;
+      min-height:160px;
+      padding:10px;
+      border:1px solid #ccc;
+      border-radius:8px;
+      font-family:monospace;
+      resize:vertical;
+    }
+
+    .history-details{
+      background:white;
+      border-radius:14px;
+      padding:12px;
+      margin:14px 0;
+      border:1px solid #eee;
+      text-align:left;
+    }
+
+    .history-details summary{
+      cursor:pointer;
+      font-weight:900;
+      color:var(--title);
+      text-align:center;
+      padding:6px;
+    }
+
+    .history-details[open] summary{
+      margin-bottom:10px;
+    }
+
+    .progress-row{
+      display:grid;
+      grid-template-columns:1fr .8fr .8fr 1.5fr auto;
+      gap:8px;
+      margin:8px 0;
+      align-items:center;
+    }
+
+    .progress-row input{
+      padding:8px;
+      border:1px solid #ccc;
+      border-radius:8px;
+      min-width:0;
+    }
+
+    .chart-card{
+      background:white;
+      border-radius:14px;
+      padding:12px;
+      margin-top:16px;
+      border:1px solid #eee;
+    }
+
+    .chart-card h3{
+      color:var(--title);
+      margin:0 0 8px;
+    }
+
+    #drillView{ 
+      display:none; 
+      max-width:100vw; 
+      min-height:100vh;
+      margin:0 auto; 
+      padding:10px;
+    }
+
+    #drillView.active{ 
+      display:flex; 
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+    }
+
+    #setStatus{
+      font-size:clamp(1.4rem, 4vw, 3rem);
+      font-weight:900;
+      color:var(--title);
+      margin:0 0 8px;
+      min-height:1.8rem;
+    }
+
+    #direction{ 
+      font-size:clamp(2rem, 8vw, 6rem); 
+      font-weight:900; 
+      color:var(--ink); 
+      margin:4px 0; 
+      min-height:1.2em; 
+    }
+
+    #countdown{ 
+      font-size:clamp(10rem, 38vw, 28rem);
+      font-weight:1000;
+      color:var(--accent); 
+      min-height:.95em; 
+      line-height:.85;
+      letter-spacing:-0.08em;
+      text-shadow:0 8px 20px rgba(0,0,0,.08);
+    }
+
+    #image{ 
+      width:min(85vw, 520px); 
+      max-height:38vh;
+      height:auto; 
+      display:none; 
+      margin:8px auto; 
+      background:#fff; 
+      border-radius:12px; 
+      border:1px solid #eee; 
+      object-fit:contain;
+    }
+
+    #stopBtn,
+    #skipBreakBtn{
+      font-size:1.1rem;
+      padding:12px 18px;
+    }
+
+    #skipBreakBtn{
+      display:none;
+      background:#6b7280;
+      margin-left:8px;
+    }
+
+    #endView{ 
+      display:none; 
+      max-width:720px; 
+      margin:0 auto; 
+    }
+
+    #endView.active{ 
+      display:block; 
+    }
+
+    #endView h2{ 
+      font-family:'Dancing Script', cursive; 
+      font-size:2.6rem; 
+      color:var(--ink); 
+      margin:18px 0 6px; 
+    }
+
+    #endView p{ 
+      font-size:1.2rem; 
+      color:#444; 
+      margin:0 0 12px; 
+    }
+
+    @media (max-width:650px){
+      .progress-row,
+      .metric-grid{
+        grid-template-columns:1fr;
+      }
+
+      .code-row{
+        flex-direction:column;
+      }
+
+      #codeInput,
+      #applyCodeBtn{
+        width:100%;
+      }
+
+      .direction-btn{
+        width:100px;
+        height:100px;
+      }
+
+      #countdown{
+        font-size:clamp(9rem, 48vw, 22rem);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <img src="https://i.pinimg.com/originals/99/37/30/993730e1d3019ac8611e2401b63fbc16.gif" alt="Floating Ghost" id="floatingGhost" />
+
+  <h1>Squash Ghosting Drill</h1>
+
+  <div id="configContainer">
+
+    <div id="homeStartSlot">
+      <button id="startBtn" class="top-start-btn">Start Drill</button>
+    </div>
+
+    <div class="code-box subtle-settings-box">
+      <details>
+        <summary>Player Settings</summary>
+
+        <div class="code-row">
+          <input type="password" id="codeInput" placeholder="Optional access key">
+          <button id="applyCodeBtn">Open</button>
+        </div>
+
+        <div id="welcomeMessage"></div>
+
+        <div id="sofiaStartSlot"></div>
+      </details>
+    </div>
+
+    <div class="row">
+      <label for="setsInput">Number of Sets</label>
+      <input type="number" id="setsInput" min="1" step="1" placeholder="e.g., 3">
+    </div>
+
+    <div class="row">
+      <label for="movesInput">Moves per Set</label>
+      <input type="number" id="movesInput" min="1" step="1" placeholder="e.g., 10">
+    </div>
+
+    <div class="row">
+      <label for="secondsInput">Reaction Time / Time to Ball (s)</label>
+      <input type="number" id="secondsInput" min="0.1" step="0.1" placeholder="e.g., 3">
+    </div>
+
+    <div class="row">
+      <label for="moveBreakInput">Reposition Time (s)</label>
+      <input type="number" id="moveBreakInput" min="0" step="0.1" placeholder="e.g., 0.2">
+    </div>
+
+    <div class="row">
+      <label for="setBreakInput">Rest Between Sets (s)</label>
+      <input type="number" id="setBreakInput" min="0" step="1" placeholder="e.g., 45">
+    </div>
+
+    <div class="direction-grid" id="directionButtons"></div>
+
+    <details class="calculator-box collapsible-card">
+      <summary>Performance Calculator</summary>
+      <p>These update automatically when you change your numbers.</p>
+
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Estimated speed to ball</div>
+          <div class="metric-value" id="speedMetric">—</div>
+          <div class="metric-note">Distance ÷ reaction time</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-label">Total moves</div>
+          <div class="metric-value" id="movesMetric">—</div>
+          <div class="metric-note">Sets × moves per set</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-label">Active ghosting time</div>
+          <div class="metric-value" id="activeMetric">—</div>
+          <div class="metric-note">Time actually moving to the ball</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-label">Total session time</div>
+          <div class="metric-value" id="sessionMetric">—</div>
+          <div class="metric-note">Active + reposition + rest</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-label">Work ratio</div>
+          <div class="metric-value" id="workRatioMetric">—</div>
+          <div class="metric-note">Higher = less rest, more stamina demand</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-label">Stamina load</div>
+          <div class="metric-value" id="staminaMetric">—</div>
+          <div class="metric-note">Light, moderate, hard, or intense</div>
+        </div>
+      </div>
+    </details>
+
+    <details id="progressSection" class="collapsible-card">
+      <summary>📈 Sofia’s Progress</summary>
+      <p>Track ghosting speed and Universal Squash Rating over time.</p>
+
+      <details class="sofia-inputs nested-details">
+        <summary>Current Ghosting Entry</summary>
+
+        <div class="row">
+          <label for="distanceInput">Average Distance to Ball (m)</label>
+          <input type="number" id="distanceInput" min="0.1" step="0.1" placeholder="e.g., 4.5">
+        </div>
+
+        <div class="row">
+          <label for="ratingInput">Universal Squash Rating</label>
+          <input type="number" id="ratingInput" min="0" step="0.01" placeholder="e.g., 4.25">
+        </div>
+
+        <div class="row">
+          <label for="dateInput">Progress Date</label>
+          <input type="date" id="dateInput">
+        </div>
+      </details>
+
+      <details class="sofia-inputs nested-details">
+        <summary>Enter Old Squash Rating</summary>
+
+        <div class="row">
+          <label for="oldRatingDateInput">Old Rating Date</label>
+          <input type="date" id="oldRatingDateInput">
+        </div>
+
+        <div class="row">
+          <label for="oldRatingInput">Old Universal Squash Rating</label>
+          <input type="number" id="oldRatingInput" min="0" step="0.01" placeholder="e.g., 3.85">
+        </div>
+
+        <button id="addOldRatingBtn">Add Old Rating to Chart</button>
+      </details>
+
+      <details class="sofia-inputs nested-details">
+        <summary>Import ClubLocker Rating History</summary>
+
+        <p>Paste the full ClubLocker rating history text here. The app will clean duplicates and use one rating per date.</p>
+
+        <textarea id="clubLockerBulkInput" placeholder="Paste ClubLocker rating history here..."></textarea>
+
+        <button id="importClubLockerBtn">Import ClubLocker History</button>
+      </details>
+
+      <details class="history-details">
+        <summary>Show / edit rating history</summary>
+        <div id="progressRows"></div>
+      </details>
+
+      <button id="saveProfileBtn">Save Sofia Profile</button>
+      <button id="addProgressBtn">Add Current Stats to Chart</button>
+      <button id="resyncSheetsBtn">Resync All History to Google Sheets</button>
+      <button id="resetProfileBtn">Reset Sofia Profile</button>
+
+      <div id="sheetStatus"></div>
+
+      <div class="chart-card">
+        <h3>Speed Progress</h3>
+        <canvas id="progressChart"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <h3>Universal Squash Rating Progress</h3>
+        <canvas id="ratingProgressChart"></canvas>
+      </div>
+    </details>
+
+    <div id="error-message"></div>
+  </div>
+
+  <div id="drillView">
+    <div id="setStatus"></div>
+    <div id="direction"></div>
+    <div id="countdown"></div>
+
+    <img id="image" src="" alt="Direction">
+
+    <div>
+      <button id="stopBtn">Stop</button>
+      <button id="skipBreakBtn">Skip Break</button>
+    </div>
+  </div>
+
+  <div id="endView">
+    <h2>🎉 Congratulations! Drill Complete 🎉</h2>
+    <p>Nice work — you finished the session.</p>
+    <button id="restartBtn">Run Again</button>
+  </div>
+
+  <script>
+    const GOOGLE_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxtmitu5p3d1bA45VNqj_Bh26YWf71oGINgZg6g7wwM-e4-EKgSbVwwPtQdc9FAhj0R/exec';
+
+    const allDirections = [
+      { name: 'Front Left',  key: 'front-left',  row:0 },
+      { name: 'Front Right', key: 'front-right', row:0 },
+      { name: 'Side Left',   key: 'side-left',   row:1 },
+      { name: 'Side Right',  key: 'side-right',  row:1 },
+      { name: 'Back Left',   key: 'back-left',   row:2 },
+      { name: 'Back Right',  key: 'back-right',  row:2 }
+    ];
+
+    const clubLockerDefaultRatings = [
+      ['2023-05-10',1.98],['2023-05-17',2.05],['2023-05-31',2.15],
+      ['2023-06-07',2.13],['2023-06-14',2.17],['2023-06-21',2.14],['2023-06-28',2.12],
+      ['2023-07-05',2.13],['2023-07-12',2.17],['2023-07-19',2.22],['2023-07-26',2.23],
+      ['2023-08-02',2.19],['2023-08-09',2.25],['2023-08-16',2.26],['2023-08-23',2.30],['2023-08-30',2.26],
+      ['2023-09-06',2.31],['2023-09-13',2.34],['2023-09-20',2.31],['2023-09-27',2.27],
+      ['2023-10-04',2.31],['2023-10-11',2.36],['2023-10-18',2.54],['2023-10-25',2.64],
+      ['2023-11-01',2.68],['2023-11-08',2.70],['2023-11-15',2.72],['2023-11-22',2.70],['2023-11-29',2.77],
+      ['2023-12-06',2.75],['2023-12-13',2.76],['2023-12-20',2.81],['2023-12-27',2.81],
+      ['2024-01-03',2.81],['2024-01-10',2.84],['2024-01-17',2.84],['2024-01-24',2.92],['2024-01-31',3.00],
+      ['2024-02-07',2.97],['2024-02-14',3.02],['2024-02-21',3.02],['2024-02-28',3.05],
+      ['2024-03-06',3.03],['2024-03-13',3.05],['2024-03-20',3.06],['2024-03-27',3.07],
+      ['2024-04-03',3.09],['2024-04-10',3.12],['2024-04-17',3.11],['2024-04-24',3.17],
+      ['2024-05-01',3.17],['2024-05-08',3.21],['2024-05-15',3.23],['2024-05-22',3.24],['2024-05-29',3.30],
+      ['2024-06-05',3.31],['2024-06-12',3.35],['2024-06-19',3.34],['2024-06-26',3.41],
+      ['2024-07-03',3.42],['2024-07-10',3.43],['2024-07-17',3.43],['2024-07-24',3.45],['2024-07-31',3.45],
+      ['2024-08-07',3.44],['2024-08-14',3.45],['2024-08-21',3.46],['2024-08-28',3.51],
+      ['2024-09-04',3.51],['2024-09-11',3.53],['2024-09-18',3.53],['2024-09-25',3.54],
+      ['2024-10-02',3.44],['2024-10-09',3.57],['2024-10-16',3.59],['2024-10-23',3.62],['2024-10-30',3.65],
+      ['2024-11-06',3.66],['2024-11-13',3.68],['2024-11-20',3.59],['2024-11-27',3.71],
+      ['2024-12-04',3.72],['2024-12-11',3.77],['2024-12-18',3.78],['2024-12-25',3.79],
+      ['2025-01-01',3.83],['2025-01-08',3.84],['2025-01-15',3.86],['2025-01-22',3.89],['2025-01-29',3.91],
+      ['2025-02-05',3.93],['2025-02-12',3.94],['2025-02-19',3.95],['2025-02-26',3.97],
+      ['2025-03-05',3.96],['2025-03-12',3.97],['2025-03-19',3.97],['2025-03-26',3.97],
+      ['2025-04-02',3.98],['2025-04-09',3.99],['2025-04-16',3.99],['2025-04-23',3.99],['2025-04-30',4.01],
+      ['2025-05-07',4.02],['2025-05-14',4.02],['2025-05-21',4.03],['2025-05-28',4.03],
+      ['2025-06-04',4.04],['2025-06-11',4.05],['2025-06-18',4.06],['2025-06-25',4.05],
+      ['2025-07-02',4.05],['2025-07-09',4.06],['2025-07-16',4.06],['2025-07-23',4.06],['2025-07-30',4.06],
+      ['2025-08-06',4.06],['2025-08-13',4.06],['2025-08-20',4.06],['2025-08-27',4.06],
+      ['2025-09-03',4.06],['2025-09-10',4.06],['2025-09-17',4.06],['2025-09-24',4.06],
+      ['2025-10-01',4.07],['2025-10-08',4.08],['2025-10-15',4.05],['2025-10-22',4.06],['2025-10-29',4.07],
+      ['2025-11-05',4.08],['2025-11-12',4.09],['2025-11-19',4.10],['2025-11-26',4.11],
+      ['2025-12-03',4.10],['2025-12-10',4.12],['2025-12-17',4.14],['2025-12-24',4.14],['2025-12-31',4.14],
+      ['2026-01-07',4.14],['2026-01-14',4.14],['2026-01-21',4.15],['2026-01-28',4.16],
+      ['2026-02-04',4.17],['2026-02-11',4.18],['2026-02-18',4.19],['2026-02-25',4.18],
+      ['2026-03-04',4.19],['2026-03-11',4.19],['2026-03-18',4.19],['2026-03-25',4.20],
+      ['2026-04-01',4.20],['2026-04-08',4.20],['2026-04-15',4.22],['2026-04-22',4.22],['2026-04-29',4.22],
+      ['2026-05-06',4.22],['2026-05-13',4.23],['2026-05-20',4.23],['2026-05-27',4.24],
+      ['2026-06-03',4.25],['2026-06-10',4.25],['2026-06-17',4.26]
+    ];
+
+    const beep = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+    beep.preload = 'auto';
+
+    const selected = Object.fromEntries(allDirections.map(d => [d.key, true]));
+
+    const els = {
+      config: document.getElementById('configContainer'),
+      homeStartSlot: document.getElementById('homeStartSlot'),
+      sofiaStartSlot: document.getElementById('sofiaStartSlot'),
+
+      drill: document.getElementById('drillView'),
+      end: document.getElementById('endView'),
+
+      setStatus: document.getElementById('setStatus'),
+      direction: document.getElementById('direction'),
+      countdown: document.getElementById('countdown'),
+      image: document.getElementById('image'),
+
+      dirBtns: document.getElementById('directionButtons'),
+      start: document.getElementById('startBtn'),
+      stop: document.getElementById('stopBtn'),
+      restart: document.getElementById('restartBtn'),
+      skipBreak: document.getElementById('skipBreakBtn'),
+      error: document.getElementById('error-message'),
+      sheetStatus: document.getElementById('sheetStatus'),
+
+      codeInput: document.getElementById('codeInput'),
+      applyCode: document.getElementById('applyCodeBtn'),
+      welcome: document.getElementById('welcomeMessage'),
+
+      setsInput: document.getElementById('setsInput'),
+      movesInput: document.getElementById('movesInput'),
+      secondsInput: document.getElementById('secondsInput'),
+      moveBreakInput: document.getElementById('moveBreakInput'),
+      setBreakInput: document.getElementById('setBreakInput'),
+      distanceInput: document.getElementById('distanceInput'),
+      ratingInput: document.getElementById('ratingInput'),
+      dateInput: document.getElementById('dateInput'),
+      oldRatingDateInput: document.getElementById('oldRatingDateInput'),
+      oldRatingInput: document.getElementById('oldRatingInput'),
+      clubLockerBulkInput: document.getElementById('clubLockerBulkInput'),
+
+      calculatorBox: document.querySelector('.calculator-box'),
+
+      speedMetric: document.getElementById('speedMetric'),
+      movesMetric: document.getElementById('movesMetric'),
+      activeMetric: document.getElementById('activeMetric'),
+      sessionMetric: document.getElementById('sessionMetric'),
+      workRatioMetric: document.getElementById('workRatioMetric'),
+      staminaMetric: document.getElementById('staminaMetric'),
+
+      progressSection: document.getElementById('progressSection'),
+      progressRows: document.getElementById('progressRows'),
+      addProgress: document.getElementById('addProgressBtn'),
+      addOldRating: document.getElementById('addOldRatingBtn'),
+      importClubLocker: document.getElementById('importClubLockerBtn'),
+      saveProfile: document.getElementById('saveProfileBtn'),
+      resetProfile: document.getElementById('resetProfileBtn'),
+      resyncSheets: document.getElementById('resyncSheetsBtn'),
+      progressChart: document.getElementById('progressChart'),
+      ratingProgressChart: document.getElementById('ratingProgressChart')
+    };
+
+    let controller = null;
+    let skipBreakRequested = false;
+    let progressChart = null;
+    let ratingProgressChart = null;
+
+    async function saveToGoogleSheets(payload){
+      els.sheetStatus.textContent = 'Sending to Google Sheets...';
+
+      try{
+        const finalPayload = {
+          timestamp: new Date().toISOString(),
+          source: 'Squash Ghosting Drill Website',
+          ...payload
+        };
+
+        await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(finalPayload)
+        });
+
+        els.sheetStatus.textContent = 'Sent to Google Sheets. Check your sheet to confirm.';
+        return true;
+      } catch(e){
+        console.error('Google Sheets save failed:', e);
+        els.sheetStatus.textContent = 'Google Sheets save failed. Check Apps Script deployment.';
+        return false;
+      }
+    }
+
+    function moveStartButtonToSofiaMode(){
+      els.sofiaStartSlot.appendChild(els.start);
+    }
+
+    function moveStartButtonToHomeMode(){
+      els.homeStartSlot.appendChild(els.start);
+    }
+
+    function buildButtons(){
+      els.dirBtns.innerHTML = '';
+
+      const rows = [[], [], []];
+      allDirections.forEach(d => rows[d.row].push(d));
+
+      const labels = ['Front', 'Side', 'Back'];
+
+      rows.forEach((r, i) => {
+        const head = document.createElement('div');
+        head.className = 'row-head';
+        head.textContent = labels[i];
+        els.dirBtns.appendChild(head);
+
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'dir-row';
+
+        r.forEach(d => {
+          const btn = document.createElement('button');
+          btn.className = 'direction-btn active';
+          btn.dataset.key = d.key;
+
+          const img = document.createElement('img');
+          img.src = `images/${d.key}.png`;
+          img.alt = d.name;
+
+          btn.appendChild(img);
+
+          btn.onclick = () => {
+            selected[d.key] = !selected[d.key];
+            btn.classList.toggle('active', selected[d.key]);
+          };
+
+          rowDiv.appendChild(btn);
+        });
+
+        els.dirBtns.appendChild(rowDiv);
+      });
+    }
+
+    function preloadImages(){
+      allDirections.forEach(d => {
+        const im = new Image();
+        im.src = `images/${d.key}.png`;
+      });
+    }
+
+    function secondsToMinSec(seconds){
+      const min = Math.floor(seconds / 60);
+      const sec = Math.round(seconds % 60);
+
+      if(min <= 0){
+        return `${sec}s`;
+      }
+
+      return `${min}m ${sec}s`;
+    }
+
+    function getNumber(el){
+      const n = parseFloat(el.value);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function cleanRating(value){
+      if(value < 0) return 0;
+      return Number(value.toFixed(2));
+    }
+
+    function getProgressDateLabel(){
+      if(els.dateInput.value){
+        return els.dateInput.value;
+      }
+
+      const today = new Date();
+
+      return today.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    function calculatePerformance(){
+      const sets = getNumber(els.setsInput);
+      const movesPerSet = getNumber(els.movesInput);
+      const reaction = getNumber(els.secondsInput);
+      const reposition = getNumber(els.moveBreakInput);
+      const rest = getNumber(els.setBreakInput);
+      const distance = getNumber(els.distanceInput);
+
+      if(sets <= 0 || movesPerSet <= 0 || reaction <= 0 || distance <= 0){
+        els.speedMetric.textContent = '—';
+        els.movesMetric.textContent = '—';
+        els.activeMetric.textContent = '—';
+        els.sessionMetric.textContent = '—';
+        els.workRatioMetric.textContent = '—';
+        els.staminaMetric.textContent = '—';
+        return null;
+      }
+
+      const totalMoves = sets * movesPerSet;
+      const breaks = Math.max(0, sets - 1);
+
+      const speed = distance / reaction;
+      const activeTime = totalMoves * reaction;
+      const resetTime = totalMoves * reposition;
+      const restTime = breaks * rest;
+      const totalTime = activeTime + resetTime + restTime;
+      const workRatio = totalTime > 0 ? (activeTime / totalTime) * 100 : 0;
+
+      let staminaLabel = 'Light';
+
+      if(workRatio >= 75 && totalMoves >= 100){
+        staminaLabel = 'Intense';
+      } else if(workRatio >= 60 && totalMoves >= 80){
+        staminaLabel = 'Hard';
+      } else if(workRatio >= 40 && totalMoves >= 50){
+        staminaLabel = 'Moderate';
+      }
+
+      els.speedMetric.textContent = `${speed.toFixed(2)} m/s`;
+      els.movesMetric.textContent = `${totalMoves}`;
+      els.activeMetric.textContent = secondsToMinSec(activeTime);
+      els.sessionMetric.textContent = secondsToMinSec(totalTime);
+      els.workRatioMetric.textContent = `${workRatio.toFixed(0)}%`;
+      els.staminaMetric.textContent = staminaLabel;
+
+      return {
+        speed,
+        totalMoves,
+        activeTime,
+        resetTime,
+        restTime,
+        totalTime,
+        workRatio,
+        staminaLabel
+      };
+    }
+
+    function defaultSofiaProfile(){
+      return {
+        sets: 10,
+        movesPerSet: 12,
+        reactionTime: 3,
+        repositionTime: 0.2,
+        restBetweenSets: 45,
+        distanceToBall: 4.5,
+        rating: 4.00,
+        progressDate: ''
+      };
+    }
+
+    function getSofiaProfile(){
+      const saved = localStorage.getItem('sofiaGhostingProfile');
+
+      if(saved){
+        try{
+          return JSON.parse(saved);
+        } catch(e){
+          return defaultSofiaProfile();
+        }
+      }
+
+      return defaultSofiaProfile();
+    }
+
+    function saveSofiaProfile(){
+      const rating = cleanRating(getNumber(els.ratingInput));
+
+      const profile = {
+        sets: getNumber(els.setsInput),
+        movesPerSet: getNumber(els.movesInput),
+        reactionTime: getNumber(els.secondsInput),
+        repositionTime: getNumber(els.moveBreakInput),
+        restBetweenSets: getNumber(els.setBreakInput),
+        distanceToBall: getNumber(els.distanceInput),
+        rating: rating,
+        progressDate: els.dateInput.value
+      };
+
+      localStorage.setItem('sofiaGhostingProfile', JSON.stringify(profile));
+
+      saveToGoogleSheets({
+        type: 'profile',
+        sets: profile.sets,
+        movesPerSet: profile.movesPerSet,
+        reactionTime: profile.reactionTime,
+        repositionTime: profile.repositionTime,
+        restBetweenSets: profile.restBetweenSets,
+        distanceToBall: profile.distanceToBall,
+        speed: '',
+        totalMoves: '',
+        workRatio: '',
+        stamina: '',
+        rating: profile.rating,
+        progressDate: profile.progressDate,
+        notes: 'Saved Sofia profile'
+      });
+
+      els.welcome.style.display = 'block';
+      els.welcome.innerHTML = `
+        <span class="sparkle">💜 Sofia profile saved 💜</span><br>
+        Saved locally and sent to Google Sheets.
+      `;
+
+      calculatePerformance();
+    }
+
+    function loadSofiaProfile(){
+      const profile = getSofiaProfile();
+
+      els.setsInput.value = profile.sets;
+      els.movesInput.value = profile.movesPerSet;
+      els.secondsInput.value = profile.reactionTime;
+      els.moveBreakInput.value = profile.repositionTime;
+      els.setBreakInput.value = profile.restBetweenSets;
+      els.distanceInput.value = profile.distanceToBall;
+      els.ratingInput.value = profile.rating || 4.00;
+      els.dateInput.value = profile.progressDate || '';
+
+      calculatePerformance();
+    }
+
+    function resetSofiaProfile(){
+      localStorage.removeItem('sofiaGhostingProfile');
+
+      const profile = defaultSofiaProfile();
+
+      els.setsInput.value = profile.sets;
+      els.movesInput.value = profile.movesPerSet;
+      els.secondsInput.value = profile.reactionTime;
+      els.moveBreakInput.value = profile.repositionTime;
+      els.setBreakInput.value = profile.restBetweenSets;
+      els.distanceInput.value = profile.distanceToBall;
+      els.ratingInput.value = profile.rating;
+      els.dateInput.value = profile.progressDate;
+
+      calculatePerformance();
+
+      els.welcome.style.display = 'block';
+      els.welcome.innerHTML = `
+        <span class="sparkle">💜 Sofia profile reset 💜</span><br>
+        Back to original training stats.
+      `;
+    }
+
+    function defaultProgressData(){
+      return clubLockerDefaultRatings.map(([month, rating]) => ({
+        month,
+        speed: null,
+        rating,
+        notes: 'ClubLocker import · Universal Squash Rating',
+        type: 'clublockerRating'
+      }));
+    }
+
+    function getProgressData(){
+      const saved = localStorage.getItem('sofiaGhostingProgressSpeed');
+
+      if(saved){
+        try{
+          const data = JSON.parse(saved);
+
+          return data.map(item => ({
+            month: item.month,
+            speed: item.speed === null || item.speed === undefined || item.speed === '' ? null : Number(item.speed),
+            rating: item.rating ? Number(item.rating) : 4.00,
+            notes: item.notes || '',
+            type: item.type || 'progress'
+          }));
+        } catch(e){
+          return defaultProgressData();
+        }
+      }
+
+      return defaultProgressData();
+    }
+
+    function saveProgressData(data){
+      localStorage.setItem('sofiaGhostingProgressSpeed', JSON.stringify(data));
+    }
+
+    function renderProgressRows(){
+      const data = getProgressData();
+      els.progressRows.innerHTML = '';
+
+      data.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'progress-row';
+
+        row.innerHTML = `
+          <input type="text" value="${item.month}" placeholder="Date / Label" data-index="${index}" data-field="month">
+          <input type="number" value="${item.speed === null ? '' : item.speed}" step="0.01" placeholder="Speed m/s" data-index="${index}" data-field="speed">
+          <input type="number" value="${item.rating}" min="0" step="0.01" placeholder="USR" data-index="${index}" data-field="rating">
+          <input type="text" value="${item.notes || ''}" placeholder="Notes" data-index="${index}" data-field="notes">
+          <button type="button" data-delete="${index}">Delete</button>
+        `;
+
+        els.progressRows.appendChild(row);
+      });
+
+      els.progressRows.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', updateProgressFromInputs);
+      });
+
+      els.progressRows.querySelectorAll('button[data-delete]').forEach(btn => {
+        btn.addEventListener('click', function(){
+          const index = Number(this.dataset.delete);
+          const data = getProgressData();
+
+          data.splice(index, 1);
+
+          saveProgressData(data);
+          renderProgressRows();
+          renderAllCharts();
+        });
+      });
+    }
+
+    function updateProgressFromInputs(){
+      const rows = els.progressRows.querySelectorAll('.progress-row');
+      const data = [];
+
+      rows.forEach(row => {
+        const month = row.querySelector('[data-field="month"]').value;
+        const speedRaw = row.querySelector('[data-field="speed"]').value;
+        const rating = parseFloat(row.querySelector('[data-field="rating"]').value);
+        const notes = row.querySelector('[data-field="notes"]').value;
+
+        const speed = speedRaw === '' ? null : parseFloat(speedRaw);
+
+        data.push({
+          month,
+          speed: speed === null || isNaN(speed) ? null : speed,
+          rating: isNaN(rating) ? 0 : cleanRating(rating),
+          notes,
+          type: speed === null || isNaN(speed) ? 'ratingOnly' : 'progress'
+        });
+      });
+
+      saveProgressData(data);
+      renderAllCharts();
+    }
+
+    function renderProgressChart(){
+      const data = getProgressData().filter(item => Number(item.speed) > 0);
+
+      const labels = data.map(item => item.month);
+      const speeds = data.map(item => Number(item.speed));
+
+      if(progressChart){
+        progressChart.destroy();
+      }
+
+      progressChart = new Chart(els.progressChart, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Speed to Ball',
+            data: speeds,
+            tension: 0.3,
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true },
+            tooltip: {
+              callbacks: {
+                label: function(context){
+                  return `${context.parsed.y} m/s`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              title: {
+                display: true,
+                text: 'Meters per second'
+              },
+              beginAtZero: false
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Date'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderRatingProgressChart(){
+      const data = getProgressData().filter(item => Number(item.rating) > 0);
+
+      const labels = data.map(item => item.month);
+      const ratings = data.map(item => Number(item.rating));
+
+      if(ratingProgressChart){
+        ratingProgressChart.destroy();
+      }
+
+      ratingProgressChart = new Chart(els.ratingProgressChart, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Universal Squash Rating',
+            data: ratings,
+            tension: 0.3,
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true },
+            tooltip: {
+              callbacks: {
+                label: function(context){
+                  return `USR ${context.parsed.y}`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              title: {
+                display: true,
+                text: 'Universal Squash Rating'
+              },
+              beginAtZero: false
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Date'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderAllCharts(){
+      renderProgressChart();
+      renderRatingProgressChart();
+    }
+
+    function addProgressMonth(){
+      const current = calculatePerformance();
+
+      if(!current){
+        els.error.textContent = '⚠️ Fill in valid numbers first.';
+        return;
+      }
+
+      let rating = getNumber(els.ratingInput);
+
+      if(rating <= 0){
+        els.error.textContent = '⚠️ Add your Universal Squash Rating.';
+        return;
+      }
+
+      rating = cleanRating(rating);
+      els.ratingInput.value = rating;
+      els.error.textContent = '';
+
+      const data = getProgressData();
+      const label = getProgressDateLabel();
+
+      const notes = `${current.totalMoves} moves · ${current.staminaLabel} · ${current.workRatio.toFixed(0)}% work`;
+
+      data.push({
+        month: label,
+        speed: Number(current.speed.toFixed(2)),
+        rating: rating,
+        notes: notes,
+        type: 'progress'
+      });
+
+      saveProgressData(data);
+      renderProgressRows();
+      renderAllCharts();
+
+      saveToGoogleSheets({
+        type: 'progress',
+        sets: getNumber(els.setsInput),
+        movesPerSet: getNumber(els.movesInput),
+        reactionTime: getNumber(els.secondsInput),
+        repositionTime: getNumber(els.moveBreakInput),
+        restBetweenSets: getNumber(els.setBreakInput),
+        distanceToBall: getNumber(els.distanceInput),
+        speed: Number(current.speed.toFixed(2)),
+        totalMoves: current.totalMoves,
+        workRatio: Number(current.workRatio.toFixed(0)),
+        stamina: current.staminaLabel,
+        rating: rating,
+        progressDate: label,
+        notes: notes
+      });
+
+      els.welcome.style.display = 'block';
+      els.welcome.innerHTML = `
+        <span class="sparkle">📈 Progress saved</span><br>
+        Added ${current.speed.toFixed(2)} m/s with USR ${rating}.
+      `;
+    }
+
+    function addOldRating(){
+      const date = els.oldRatingDateInput.value;
+      let rating = getNumber(els.oldRatingInput);
+
+      if(!date){
+        els.error.textContent = '⚠️ Add a date for the old squash rating.';
+        return;
+      }
+
+      if(rating <= 0){
+        els.error.textContent = '⚠️ Add an old Universal Squash Rating.';
+        return;
+      }
+
+      rating = cleanRating(rating);
+      els.error.textContent = '';
+
+      const data = getProgressData();
+
+      data.push({
+        month: date,
+        speed: null,
+        rating: rating,
+        notes: 'Old squash rating entry',
+        type: 'ratingOnly'
+      });
+
+      saveProgressData(data);
+      renderProgressRows();
+      renderAllCharts();
+
+      saveToGoogleSheets({
+        type: 'oldRating',
+        sets: '',
+        movesPerSet: '',
+        reactionTime: '',
+        repositionTime: '',
+        restBetweenSets: '',
+        distanceToBall: '',
+        speed: '',
+        totalMoves: '',
+        workRatio: '',
+        stamina: '',
+        rating: rating,
+        progressDate: date,
+        notes: 'Old squash rating entry'
+      });
+
+      els.welcome.style.display = 'block';
+      els.welcome.innerHTML = `
+        <span class="sparkle">📈 Old rating saved</span><br>
+        Added USR ${rating} from ${date} to your rating chart.
+      `;
+
+      els.oldRatingInput.value = '';
+    }
+
+    function parseClubLockerRatings(rawText){
+      const lines = rawText
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+      const records = [];
+
+      for(let i = 0; i <= lines.length - 6; i++){
+        const season = lines[i];
+        const date = lines[i + 1];
+        const division = lines[i + 2].replace(/`/g, '').trim();
+        const rank = lines[i + 3];
+        const ratingRaw = lines[i + 4];
+        const source = lines[i + 5];
+
+        const looksLikeSeason = /^\d{4}-\d{4}$/.test(season);
+        const looksLikeDate = /^\d{4}-\d{2}-\d{2}$/.test(date);
+        const rating = parseFloat(ratingRaw);
+
+        if(
+          looksLikeSeason &&
+          looksLikeDate &&
+          !isNaN(rating) &&
+          (
+            source === 'Universal Squash Rating' ||
+            source === 'US SQUASH' ||
+            source === 'High Schools'
+          )
+        ){
+          records.push({
+            season,
+            date,
+            division,
+            rank,
+            rating: cleanRating(rating),
+            source
+          });
+
+          i += 5;
+        }
+      }
+
+      function sourcePriority(source){
+        if(source === 'Universal Squash Rating') return 1;
+        if(source === 'US SQUASH') return 2;
+        if(source === 'High Schools') return 3;
+        return 99;
+      }
+
+      const byDate = new Map();
+
+      records.forEach(record => {
+        const existing = byDate.get(record.date);
+
+        if(!existing || sourcePriority(record.source) < sourcePriority(existing.source)){
+          byDate.set(record.date, record);
+        }
+      });
+
+      return Array.from(byDate.values())
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .map(record => ({
+          month: record.date,
+          speed: null,
+          rating: record.rating,
+          notes: `ClubLocker import · ${record.source} · ${record.division}`,
+          type: 'clublockerRating'
+        }));
+    }
+
+    async function importClubLockerHistory(){
+      const rawText = els.clubLockerBulkInput.value.trim();
+
+      if(!rawText){
+        els.error.textContent = '⚠️ Paste your ClubLocker rating history first.';
+        return;
+      }
+
+      const importedEntries = parseClubLockerRatings(rawText);
+
+      if(importedEntries.length === 0){
+        els.error.textContent = '⚠️ Could not find valid ClubLocker rating rows.';
+        return;
+      }
+
+      els.error.textContent = '';
+
+      const currentData = getProgressData();
+
+      const withoutOldClubLockerImports = currentData.filter(item => item.type !== 'clublockerRating');
+
+      const mergedData = withoutOldClubLockerImports
+        .concat(importedEntries)
+        .sort((a, b) => String(a.month).localeCompare(String(b.month)));
+
+      saveProgressData(mergedData);
+      renderProgressRows();
+      renderAllCharts();
+
+      els.sheetStatus.textContent = `Importing ${importedEntries.length} ClubLocker ratings to Google Sheets...`;
+
+      for(const entry of importedEntries){
+        await saveToGoogleSheets({
+          type: 'clublockerRating',
+          sets: '',
+          movesPerSet: '',
+          reactionTime: '',
+          repositionTime: '',
+          restBetweenSets: '',
+          distanceToBall: '',
+          speed: '',
+          totalMoves: '',
+          workRatio: '',
+          stamina: '',
+          rating: entry.rating,
+          progressDate: entry.month,
+          notes: entry.notes
+        });
+      }
+
+      els.sheetStatus.textContent = `Imported ${importedEntries.length} ClubLocker ratings. Check Google Sheets to confirm.`;
+
+      els.welcome.style.display = 'block';
+      els.welcome.innerHTML = `
+        <span class="sparkle">📈 ClubLocker history imported</span><br>
+        Added ${importedEntries.length} rating entries to your USR progress chart.
+      `;
+    }
+
+    async function resyncAllHistoryToGoogleSheets(){
+      const data = getProgressData();
+
+      if(!data.length){
+        els.error.textContent = '⚠️ No history found to resync.';
+        return;
+      }
+
+      els.error.textContent = '';
+      els.sheetStatus.textContent = `Resyncing ${data.length} history entries to Google Sheets...`;
+
+      for(const entry of data){
+        await saveToGoogleSheets({
+          type: entry.type || 'historyResync',
+          sets: '',
+          movesPerSet: '',
+          reactionTime: '',
+          repositionTime: '',
+          restBetweenSets: '',
+          distanceToBall: '',
+          speed: entry.speed === null ? '' : entry.speed,
+          totalMoves: '',
+          workRatio: '',
+          stamina: '',
+          rating: entry.rating || '',
+          progressDate: entry.month || '',
+          notes: `Resynced history · ${entry.notes || ''}`
+        });
+      }
+
+      els.sheetStatus.textContent = `Resynced ${data.length} entries to Google Sheets. Check your sheet.`;
+
+      els.welcome.style.display = 'block';
+      els.welcome.innerHTML = `
+        <span class="sparkle">📤 Google Sheets resync complete</span><br>
+        Sent ${data.length} saved history entries again.
+      `;
+    }
+
+    function showSofiaExtras(){
+      document.body.classList.add('sofia-mode');
+      els.calculatorBox.style.display = 'block';
+      els.progressSection.style.display = 'block';
+
+      renderProgressRows();
+      renderAllCharts();
+      calculatePerformance();
+    }
+
+    function applyTrainingCode(){
+      const code = els.codeInput.value.trim().toLowerCase();
+
+      if(code === 'sofiahtang'){
+        loadSofiaProfile();
+        moveStartButtonToSofiaMode();
+
+        els.error.textContent = '';
+
+        els.welcome.style.display = 'block';
+        els.welcome.innerHTML = `
+          <span class="sparkle">💜 Welcome back, Sofia 💜</span><br>
+          Your saved profile has been loaded.
+        `;
+
+        showSofiaExtras();
+
+        els.applyCode.textContent = 'Opened ✓';
+
+        setTimeout(() => {
+          els.applyCode.textContent = 'Open';
+        }, 1800);
+
+      } else {
+        moveStartButtonToHomeMode();
+
+        els.welcome.style.display = 'none';
+        els.calculatorBox.style.display = 'none';
+        els.progressSection.style.display = 'none';
+        document.body.classList.remove('sofia-mode');
+        els.error.textContent = '⚠️ Invalid access key.';
+      }
+    }
+
+    function validate(){
+      const defs = [
+        ['setsInput', 'Number of Sets', 1],
+        ['movesInput', 'Moves per Set', 1],
+        ['secondsInput', 'Reaction Time / Time to Ball (s)', 0.1],
+        ['moveBreakInput', 'Reposition Time (s)', 0],
+        ['setBreakInput', 'Rest Between Sets (s)', 0]
+      ];
+
+      for(const [id, label, min] of defs){
+        const val = document.getElementById(id).value.trim();
+
+        if(!val) {
+          return `${label} is required.`;
+        }
+
+        const n = parseFloat(val);
+
+        if(isNaN(n) || n < min) {
+          return `${label} must be ≥ ${min}.`;
+        }
+      }
+
+      if(!Object.values(selected).some(Boolean)) {
+        return 'Select at least one direction!';
+      }
+
+      return '';
+    }
+
+    function sleep(ms, signal){
+      return new Promise((res, rej) => {
+        if(signal?.aborted) return rej();
+
+        const id = setTimeout(res, ms);
+
+        signal?.addEventListener('abort', () => {
+          clearTimeout(id);
+          rej();
+        }, { once:true });
+      });
+    }
+
+    function pick(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function skipBreak(){
+      skipBreakRequested = true;
+    }
+
+    function unlockAudioOnce(){
+      try{
+        beep.play()
+          .then(() => beep.pause())
+          .catch(() => {});
+      } catch(e){}
+
+      document.removeEventListener('click', unlockAudioOnce);
+      document.removeEventListener('touchstart', unlockAudioOnce);
+    }
+
+    document.addEventListener('click', unlockAudioOnce, { once:true });
+    document.addEventListener('touchstart', unlockAudioOnce, { once:true });
+
+    async function run(){
+      const err = validate();
+
+      if(err){
+        els.error.textContent = '⚠️ ' + err;
+        return;
+      }
+
+      els.error.textContent = '';
+      calculatePerformance();
+
+      const totalSets = +els.setsInput.value;
+      const movesPerSet = +els.movesInput.value;
+      const secondsPerMove = +els.secondsInput.value;
+      const breakPerMove = +els.moveBreakInput.value;
+      const breakPerSet = +els.setBreakInput.value;
+
+      const enabled = allDirections.filter(d => selected[d.key]);
+
+      controller = new AbortController();
+      const { signal } = controller;
+
+      els.config.style.display = 'none';
+      els.end.classList.remove('active');
+      els.drill.classList.add('active');
+      els.start.disabled = true;
+
+      try{
+        for(let s = 1; s <= totalSets; s++){
+          els.setStatus.textContent = `Set ${s} of ${totalSets}`;
+
+          for(let m = 1; m <= movesPerSet; m++){
+            const step = pick(enabled);
+
+            els.direction.textContent = step.name;
+            els.countdown.textContent = '';
+            els.image.src = `images/${step.key}.png`;
+            els.image.style.display = 'block';
+
+            try{
+              beep.currentTime = 0;
+              beep.play();
+            } catch(e){}
+
+            await sleep(secondsPerMove * 1000, signal);
+
+            els.direction.textContent = '';
+            els.image.removeAttribute('src');
+            els.image.style.display = 'none';
+
+            try{
+              beep.currentTime = 0;
+              beep.play();
+            } catch(e){}
+
+            if(breakPerMove > 0){
+              await sleep(breakPerMove * 1000, signal);
+            }
+          }
+
+          if(s < totalSets){
+            els.setStatus.textContent = `Break after Set ${s}`;
+            els.direction.textContent = 'Rest';
+            els.skipBreak.style.display = 'inline-block';
+            skipBreakRequested = false;
+
+            for(let t = Math.max(0, Math.round(breakPerSet)); t > 0; t--){
+              if(skipBreakRequested) break;
+
+              els.countdown.textContent = String(t);
+
+              try{
+                beep.currentTime = 0;
+                beep.play();
+              } catch(e){}
+
+              await sleep(1000, signal);
+            }
+
+            els.skipBreak.style.display = 'none';
+            els.countdown.textContent = '';
+            els.direction.textContent = '';
+          }
+        }
+
+        els.drill.classList.remove('active');
+        els.end.classList.add('active');
+        els.setStatus.textContent = '';
+
+      } catch(e){
+        stop();
+      }
+    }
+
+    function stop(){
+      controller?.abort();
+      controller = null;
+
+      els.start.disabled = false;
+      els.drill.classList.remove('active');
+      els.end.classList.remove('active');
+      els.config.style.display = 'block';
+
+      els.setStatus.textContent = '';
+      els.direction.textContent = '';
+      els.countdown.textContent = '';
+      els.skipBreak.style.display = 'none';
+
+      els.image.removeAttribute('src');
+      els.image.style.display = 'none';
+    }
+
+    function restart(){
+      els.end.classList.remove('active');
+      els.config.style.display = 'block';
+      els.start.disabled = false;
+    }
+
+    buildButtons();
+    preloadImages();
+
+    [
+      els.setsInput,
+      els.movesInput,
+      els.secondsInput,
+      els.moveBreakInput,
+      els.setBreakInput,
+      els.distanceInput
+    ].forEach(input => {
+      input.addEventListener('input', calculatePerformance);
+    });
+
+    els.start.onclick = run;
+    els.stop.onclick = stop;
+    els.restart.onclick = restart;
+    els.skipBreak.onclick = skipBreak;
+    els.applyCode.onclick = applyTrainingCode;
+
+    els.addProgress.onclick = addProgressMonth;
+    els.addOldRating.onclick = addOldRating;
+    els.importClubLocker.onclick = importClubLockerHistory;
+    els.resyncSheets.onclick = resyncAllHistoryToGoogleSheets;
+    els.saveProfile.onclick = saveSofiaProfile;
+    els.resetProfile.onclick = resetSofiaProfile;
+
+    els.codeInput.addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){
+        applyTrainingCode();
+      }
+    });
+  </script>
+</body>
+</html>
