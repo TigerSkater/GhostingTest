@@ -157,22 +157,6 @@
       border-radius:8px; 
     }
 
-    .code-row{
-      display:flex;
-      gap:8px;
-      justify-content:center;
-      align-items:center;
-      margin-top:8px;
-    }
-
-    .code-row input{
-      flex:1;
-      padding:10px 12px;
-      border:1px solid #ccc;
-      border-radius:10px;
-      font-size:1rem;
-    }
-
     .profile-search{
       display:flex;
       gap:8px;
@@ -546,14 +530,12 @@
       }
 
       .row,
-      .code-row,
       .profile-search{
         flex-direction:column;
       }
 
       .row>label,
       .row>input,
-      .code-row input,
       .profile-search input,
       .profile-search button{
         width:100%;
@@ -680,6 +662,7 @@
         </div>
 
         <button id="saveProfileNameBtn">Save Profile Name</button>
+        <button id="saveDrillSettingsBtn">Save Current Drill Settings</button>
         <button id="clearCurrentProfileBtn" class="secondary-btn">Use Guest Mode</button>
       </div>
 
@@ -777,7 +760,9 @@
   </div>
 
   <script>
-    const GOOGLE_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwpbV4kG_SR3DZgh_bSYkElO1n-qOafnvtXTXCTkHJShofVnK_V3DUx2WRG2o_LGeCOqA/exec';
+    const SOFIA_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyrp4BJR-HJxhiV-Dzi60GywUC3Ifgf8LA3KdQhDB8utroETbRgLsm012bVGMOinUGXeQ/exec';
+
+    const PUBLIC_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwpbV4kG_SR3DZgh_bSYkElO1n-qOafnvtXTXCTkHJShofVnK_V3DUx2WRG2o_LGeCOqA/exec';
 
     const SOFIA_ACCESS_KEY = 'sofiahtang';
 
@@ -824,6 +809,7 @@
       profileStatus: document.getElementById('profileStatus'),
       profileDisplayNameInput: document.getElementById('profileDisplayNameInput'),
       saveProfileName: document.getElementById('saveProfileNameBtn'),
+      saveDrillSettings: document.getElementById('saveDrillSettingsBtn'),
       clearCurrentProfile: document.getElementById('clearCurrentProfileBtn'),
 
       setsInput: document.getElementById('setsInput'),
@@ -861,6 +847,12 @@
     let ratingProgressChart = null;
 
     let currentPlayer = getSavedCurrentPlayer();
+
+    function getActiveSheetsUrl(){
+      return currentPlayer && currentPlayer.isSofia
+        ? SOFIA_SHEETS_WEB_APP_URL
+        : PUBLIC_SHEETS_WEB_APP_URL;
+    }
 
     function slugifyName(name){
       return String(name || 'guest')
@@ -1008,6 +1000,8 @@
         rating: profile.rating,
         notes: 'Saved player profile settings'
       });
+
+      els.profileStatus.textContent = `Saved drill settings for ${currentPlayer.playerName}.`;
     }
 
     function getProgressData(){
@@ -1075,7 +1069,7 @@
         };
 
         const script = document.createElement('script');
-        const url = new URL(GOOGLE_SHEETS_WEB_APP_URL);
+        const url = new URL(getActiveSheetsUrl());
 
         url.searchParams.set('action', 'loadPlayer');
         url.searchParams.set('playerId', playerId);
@@ -1193,7 +1187,7 @@
           ...payload
         };
 
-        await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+        await fetch(getActiveSheetsUrl(), {
           method: 'POST',
           mode: 'no-cors',
           headers: {
@@ -1333,8 +1327,6 @@
       els.sessionMetric.textContent = secondsToMinSec(totalTime);
       els.workRatioMetric.textContent = `${workRatio.toFixed(0)}%`;
       els.staminaMetric.textContent = staminaLabel;
-
-      saveCurrentProfileSettings();
 
       return {
         speed,
@@ -1998,6 +1990,7 @@
 
     els.loadProfile.onclick = loadOrCreateProfile;
     els.saveProfileName.onclick = saveProfileName;
+    els.saveDrillSettings.onclick = saveCurrentProfileSettings;
     els.clearCurrentProfile.onclick = clearCurrentProfile;
 
     els.start.onclick = run;
